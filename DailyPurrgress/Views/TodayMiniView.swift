@@ -23,37 +23,22 @@ struct TodayMiniView: View {
 
 private extension TodayMiniView {
     var openingCopy: some View {
-        Text("Daily habits don’t have to be loud.\nSometimes, they just purr.")
+        Text(Copy.opening)
             .font(.headline)
             .multilineTextAlignment(.center)
     }
 
     var catMood: some View {
-        VStack(spacing: 10) {
-            Text(model.tier.emoji)
-                .font(.system(size: 72))
-
-            Text(model.tier.title)
-                .font(.title3)
-                .fontWeight(.semibold)
-                .multilineTextAlignment(.center)
-
-            Text(model.tier.subtitle)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-        }
+        CatMoodView(tier: model.tier)
     }
 
     var progressInfo: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 10) {
+            ProgressRingView(progress: model.progress)
+
             Text("\(model.currentML) / \(model.dailyGoalML) ml")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-
-            Text("\(Int(model.progress * 100))%")
-                .font(.title2)
-                .fontWeight(.bold)
         }
     }
 
@@ -64,12 +49,12 @@ private extension TodayMiniView {
                     model.addStep()
                 }
             } label: {
-                Text("Log +\(model.stepML) ml")
+                Text(Copy.logStep(model.stepML))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
 
-            Button("Reset") {
+            Button(Copy.reset) {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     model.reset()
                 }
