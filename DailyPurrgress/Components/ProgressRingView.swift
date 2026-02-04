@@ -1,10 +1,13 @@
-//  ProgressRingView.swift ⌘ @jonathaxs
+// ProgressRingView.swift ⌘ @jonathaxs
 
 import SwiftUI
 
 struct ProgressRingView: View {
     let progress: Double          // 0.0 ... 1.0
-    let lineWidth: CGFloat = 12
+
+    var size: CGFloat = 120
+    var lineWidth: CGFloat = 12
+    var showsPercentage: Bool = true
 
     private var clampedProgress: Double {
         min(max(progress, 0), 1)
@@ -12,38 +15,36 @@ struct ProgressRingView: View {
 
     var body: some View {
         ZStack {
-            // Background ring
             Circle()
-                .stroke(
-                    Color.secondary.opacity(0.2),
-                    lineWidth: lineWidth
-                )
+                .stroke(Color.secondary.opacity(0.2), lineWidth: lineWidth)
 
-            // Progress ring
             Circle()
                 .trim(from: 0, to: clampedProgress)
                 .stroke(
                     Color.accentColor,
-                    style: StrokeStyle(
-                        lineWidth: lineWidth,
-                        lineCap: .round
-                    )
+                    style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
                 .animation(.easeInOut(duration: 0.4), value: clampedProgress)
 
-            // Center label (percentage)
-            Text("\(Int(clampedProgress * 100))%")
-                .font(.title3)
-                .fontWeight(.semibold)
+            if showsPercentage {
+                Text("\(Int(clampedProgress * 100))%")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+            }
         }
-        .frame(width: 120, height: 120)
+        .frame(width: size, height: size)
         .accessibilityElement()
-        .accessibilityLabel("Daily progress")
+        .accessibilityLabel(Copy.progressAccessibilityLabel)
         .accessibilityValue("\(Int(clampedProgress * 100)) percent")
     }
 }
 
 #Preview {
-    ProgressRingView(progress: 0.65)
+    VStack(spacing: 24) {
+        ProgressRingView(progress: 0.15)
+        ProgressRingView(progress: 0.65, size: 140, lineWidth: 14)
+        ProgressRingView(progress: 1.0, showsPercentage: false)
+    }
+    .padding()
 }
