@@ -53,6 +53,14 @@ private extension TodayMiniView {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
+            .disabled(model.isComplete)
+            .opacity(model.isComplete ? 0.6 : 1.0)
+
+            if model.isComplete {
+                Text("Goal reached for today.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
 
             Button(Copy.reset) {
                 withAnimation(.easeInOut(duration: 0.2)) {
