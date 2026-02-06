@@ -57,7 +57,7 @@ private extension TodayMiniView {
             .opacity(model.isComplete ? 0.6 : 1.0)
 
             if model.isComplete {
-                Text("Goal reached for today.")
+                Text(Copy.goalReached)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
