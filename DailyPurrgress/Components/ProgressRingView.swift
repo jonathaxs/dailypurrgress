@@ -31,6 +31,9 @@ struct ProgressRingView: View {
                 Text("\(Int(clampedProgress * 100))%")
                     .font(.title3)
                     .fontWeight(.semibold)
+                    .monospacedDigit()
+                    .contentTransition(.numericText())
+                    .animation(.easeInOut(duration: 0.2), value: clampedProgress)
             }
         }
         .frame(width: size, height: size)
