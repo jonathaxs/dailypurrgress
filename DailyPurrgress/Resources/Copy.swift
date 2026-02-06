@@ -12,7 +12,9 @@ struct Copy {
     """
 
     // MARK: - Actions
-
+    
+    static let goalReached = "Goal reached for today."
+    
     static func logStep(_ amount: Int) -> String {
         "Log +\(amount) ml"
     }
