@@ -39,6 +39,12 @@ private extension TodayMiniView {
             Text("\(model.currentML) / \(model.dailyGoalML) ml")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+            
+            if !model.isComplete {
+                Text("\(model.remainingML) ml remaining")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 
