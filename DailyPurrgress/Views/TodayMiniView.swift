@@ -44,7 +44,7 @@ private extension TodayMiniView {
                 .foregroundStyle(.secondary)
             
             if !model.isComplete {
-                Text("\(model.remainingML) ml remaining")
+                Text(Copy.remaining(model.remainingML))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
