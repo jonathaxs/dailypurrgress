@@ -1,6 +1,9 @@
 // TodayMiniView.swift ⌘ @jonathaxs
 
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 struct TodayMiniView: View {
     @State private var model = MiniProgressModel()
@@ -48,9 +51,18 @@ private extension TodayMiniView {
         }
     }
 
+    func triggerHaptic() {
+        #if canImport(UIKit)
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.prepare()
+        generator.impactOccurred()
+        #endif
+    }
+
     var actions: some View {
         VStack(spacing: 12) {
             Button {
+                triggerHaptic()
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
                     model.addStep()
                 }
