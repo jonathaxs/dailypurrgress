@@ -37,7 +37,11 @@ private extension TodayMiniView {
 
     var progressInfo: some View {
         VStack(spacing: 10) {
-            ProgressRingView(progress: model.progress)
+            ProgressRingView(
+                progress: model.progress,
+                size: 132,
+                lineWidth: 14
+            )
 
             Text("\(model.currentML) / \(model.dailyGoalML) ml")
                 .font(.subheadline)
