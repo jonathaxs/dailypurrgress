@@ -9,6 +9,8 @@ struct ProgressRingView: View {
     var lineWidth: CGFloat = 12
     var showsPercentage: Bool = true
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     private var clampedProgress: Double {
         min(max(progress, 0), 1)
     }
@@ -25,7 +27,7 @@ struct ProgressRingView: View {
                     style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
-                .animation(.easeInOut(duration: 0.4), value: clampedProgress)
+                .animation(reduceMotion ? nil : .easeInOut(duration: 0.4), value: clampedProgress)
 
             if showsPercentage {
                 Text("\(Int(clampedProgress * 100))%")
@@ -33,7 +35,7 @@ struct ProgressRingView: View {
                     .fontWeight(.semibold)
                     .monospacedDigit()
                     .contentTransition(.numericText())
-                    .animation(.easeInOut(duration: 0.2), value: clampedProgress)
+                    .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: clampedProgress)
             }
         }
         .frame(width: size, height: size)
