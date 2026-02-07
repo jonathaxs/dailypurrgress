@@ -15,6 +15,10 @@ struct Copy {
     
     static let goalReached = "Goal reached for today."
     
+    static func remaining(_ amount: Int) -> String {
+        "\(amount) ml to go"
+    }
+    
     static func logStep(_ amount: Int) -> String {
         "Log +\(amount) ml"
     }
