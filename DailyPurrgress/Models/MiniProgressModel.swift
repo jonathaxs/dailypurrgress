@@ -26,6 +26,10 @@ struct MiniProgressModel {
     var isComplete: Bool {
         currentML >= dailyGoalML
     }
+    
+    var remainingML: Int {
+        max(dailyGoalML - currentML, 0)
+    }
 
     // MARK: - Intents
 
