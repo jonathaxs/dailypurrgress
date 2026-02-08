@@ -77,6 +77,9 @@ private extension TodayMiniView {
             .buttonStyle(.borderedProminent)
             .disabled(model.isComplete)
             .opacity(model.isComplete ? 0.6 : 1.0)
+            .accessibilityLabel("Log water")
+            .accessibilityValue("\(model.stepML) milliliters")
+            .accessibilityHint("Adds water toward your daily goal")
 
             if model.isComplete {
                 Text(Copy.goalReached)
@@ -91,6 +94,8 @@ private extension TodayMiniView {
             }
             .buttonStyle(.bordered)
             .disabled(model.currentML == 0)
+            .accessibilityLabel("Reset today")
+            .accessibilityHint("Clears your progress for today")
         }
     }
 }
