@@ -29,6 +29,9 @@ struct CatMoodView: View {
                 .animation(.easeInOut(duration: 0.2), value: tier)
         }
         .padding(.vertical, 8)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(tier.title)
+        .accessibilityValue(tier.subtitle)
     }
 
     // MARK: - Subtle Animations
