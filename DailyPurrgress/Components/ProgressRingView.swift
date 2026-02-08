@@ -41,7 +41,7 @@ struct ProgressRingView: View {
         .frame(width: size, height: size)
         .accessibilityElement()
         .accessibilityLabel(Copy.progressAccessibilityLabel)
-        .accessibilityValue("\(Int(clampedProgress * 100)) percent")
+        .accessibilityValue("\(Int(clampedProgress * 100)) percent completed")
     }
 }
 
