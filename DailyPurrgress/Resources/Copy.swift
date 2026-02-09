@@ -30,6 +30,10 @@ struct Copy {
     static let progressAccessibilityLabel = "Daily progress"
     static let progressAccessibilityHint = "Shows your progress toward the daily goal"
 
+    static func millilitersValue(_ amount: Int) -> String {
+        "\(amount) milliliters"
+    }
+
     static let logWaterAccessibilityLabel = "Log water"
     static let logWaterAccessibilityHint = "Adds water toward your daily goal"
 
