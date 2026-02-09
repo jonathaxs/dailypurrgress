@@ -51,6 +51,9 @@ private extension TodayMiniView {
                 Text(Copy.remaining(model.remainingML))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+                    .accessibilityLabel("Remaining")
+                    .accessibilityValue(Copy.remaining(model.remainingML))
+                    .accessibilityHint("Left to reach your daily goal")
             }
         }
     }
