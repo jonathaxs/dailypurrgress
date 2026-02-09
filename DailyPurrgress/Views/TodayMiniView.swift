@@ -9,7 +9,7 @@ struct TodayMiniView: View {
     @State private var model = MiniProgressModel()
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 24) {
             openingCopy
 
             catMood
@@ -36,7 +36,7 @@ private extension TodayMiniView {
     }
 
     var progressInfo: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 12) {
             ProgressRingView(
                 progress: model.progress,
                 size: 132,
@@ -64,7 +64,7 @@ private extension TodayMiniView {
     }
 
     var actions: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 14) {
             Button {
                 triggerHaptic()
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
