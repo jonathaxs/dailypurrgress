@@ -69,6 +69,7 @@ private extension TodayMiniView {
     var actions: some View {
         VStack(spacing: 14) {
             Button {
+                guard !model.isComplete else { return }
                 triggerHaptic()
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
                     model.addStep()
