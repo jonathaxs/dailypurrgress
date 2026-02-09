@@ -28,4 +28,11 @@ struct Copy {
     // MARK: - Accessibility
 
     static let progressAccessibilityLabel = "Daily progress"
+    static let progressAccessibilityHint = "Shows your progress toward the daily goal"
+
+    static let logWaterAccessibilityLabel = "Log water"
+    static let logWaterAccessibilityHint = "Adds water toward your daily goal"
+
+    static let resetTodayAccessibilityLabel = "Reset today"
+    static let resetTodayAccessibilityHint = "Clears your progress for today"
 }
