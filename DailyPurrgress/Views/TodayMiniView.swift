@@ -43,7 +43,7 @@ private extension TodayMiniView {
                 lineWidth: 14
             )
 
-            Text("\(model.currentML) / \(model.dailyGoalML) ml")
+            Text(Copy.progressLine(current: model.currentML, goal: model.dailyGoalML))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             
