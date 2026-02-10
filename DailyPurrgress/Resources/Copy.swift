@@ -30,6 +30,13 @@ struct Copy {
     static let progressAccessibilityLabel = "Daily progress"
     static let progressAccessibilityHint = "Shows your progress toward the daily goal"
 
+    static let remainingAccessibilityLabel = "Remaining"
+    static let remainingAccessibilityHint = "Left to reach your daily goal"
+
+    static func percentCompletedValue(_ percent: Int) -> String {
+        "\(percent) percent completed"
+    }
+
     static func millilitersValue(_ amount: Int) -> String {
         "\(amount) milliliters"
     }
