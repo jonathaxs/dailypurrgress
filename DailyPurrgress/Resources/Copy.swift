@@ -18,6 +18,10 @@ struct Copy {
     static func remaining(_ amount: Int) -> String {
         "\(amount) ml to go"
     }
+
+    static func progressLine(current: Int, goal: Int) -> String {
+        "\(current) / \(goal) ml"
+    }
     
     static func logStep(_ amount: Int) -> String {
         "Log +\(amount) ml"
