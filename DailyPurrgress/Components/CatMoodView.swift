@@ -5,6 +5,8 @@ import SwiftUI
 struct CatMoodView: View {
     let tier: CatTier
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         VStack(spacing: 10) {
             Text(tier.emoji)
@@ -12,7 +14,7 @@ struct CatMoodView: View {
                 .scaleEffect(emojiScale)
                 .opacity(emojiOpacity)
                 .animation(
-                    .spring(response: 0.4, dampingFraction: 0.75),
+                    reduceMotion ? nil : .spring(response: 0.4, dampingFraction: 0.75),
                     value: tier
                 )
 
@@ -20,13 +22,13 @@ struct CatMoodView: View {
                 .font(.title3)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
-                .animation(.easeInOut(duration: 0.2), value: tier)
+                .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: tier)
 
             Text(tier.subtitle)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .animation(.easeInOut(duration: 0.2), value: tier)
+                .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: tier)
         }
         .padding(.vertical, 8)
         .accessibilityElement(children: .ignore)
