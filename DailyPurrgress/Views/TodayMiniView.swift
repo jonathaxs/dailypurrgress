@@ -82,7 +82,7 @@ private extension TodayMiniView {
             .disabled(model.isComplete)
             .opacity(model.isComplete ? 0.6 : 1.0)
             .accessibilityLabel(Copy.logWaterAccessibilityLabel)
-            .accessibilityValue("\(model.stepML) milliliters")
+            .accessibilityValue(Copy.millilitersValue(model.stepML))
             .accessibilityHint(Copy.logWaterAccessibilityHint)
 
             if model.isComplete {
