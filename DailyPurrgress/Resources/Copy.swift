@@ -8,7 +8,7 @@ struct Copy {
 
     static let opening = """
     Daily habits don’t have to be loud.
-    Sometimes, they just purr.
+    Sometimes, they just purr. 🐅
     """
 
     // MARK: - Actions
