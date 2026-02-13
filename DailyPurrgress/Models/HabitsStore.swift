@@ -81,13 +81,37 @@ final class HabitsStore: ObservableObject {
 
     func logStep(for id: UUID) {
         guard let index = habits.firstIndex(where: { $0.id == id }) else { return }
-        habits[index].logStep()
+
+        var updated = habits
+        updated[index].logStep()
+        habits = updated
+
         save()
     }
 
     func resetHabit(id: UUID) {
         guard let index = habits.firstIndex(where: { $0.id == id }) else { return }
-        habits[index].reset()
+
+        var updated = habits
+        updated[index].reset()
+        habits = updated
+
+        save()
+    }
+
+    func setCurrent(_ newValue: Int, for id: UUID) {
+        guard let index = habits.firstIndex(where: { $0.id == id }) else { return }
+
+        let goal = max(habits[index].goal, 0)
+        let step = max(habits[index].step, 1)
+
+        let clamped = min(max(newValue, 0), goal)
+        let snapped = (goal > 0) ? (Int((Double(clamped) / Double(step)).rounded()) * step) : 0
+
+        var updated = habits
+        updated[index].current = min(max(snapped, 0), goal)
+        habits = updated
+
         save()
     }
 
