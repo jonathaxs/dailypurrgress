@@ -15,16 +15,31 @@ struct Copy {
     
     static let goalReached = "Goal reached for today."
     
-    static func remaining(_ amount: Int) -> String {
-        "\(amount) ml to go"
+    static func remaining(_ amount: Int, unit: String) -> String {
+        "\(amount) \(unit) to go"
     }
 
-    static func progressLine(current: Int, goal: Int) -> String {
-        "\(current) / \(goal) ml"
+    /// Backward-compatible (defaults to ml)
+    static func remaining(_ amount: Int) -> String {
+        remaining(amount, unit: "ml")
     }
-    
+
+    static func progressLine(current: Int, goal: Int, unit: String) -> String {
+        "\(current) / \(goal) \(unit)"
+    }
+
+    /// Backward-compatible (defaults to ml)
+    static func progressLine(current: Int, goal: Int) -> String {
+        progressLine(current: current, goal: goal, unit: "ml")
+    }
+
+    static func logStep(_ amount: Int, unit: String) -> String {
+        "Log +\(amount) \(unit)"
+    }
+
+    /// Backward-compatible (defaults to ml)
     static func logStep(_ amount: Int) -> String {
-        "Log +\(amount) ml"
+        logStep(amount, unit: "ml")
     }
 
     static let reset = "Reset"
@@ -43,6 +58,10 @@ struct Copy {
 
     static func millilitersValue(_ amount: Int) -> String {
         "\(amount) milliliters"
+    }
+
+    static func unitValue(_ amount: Int, unit: String) -> String {
+        "\(amount) \(unit)"
     }
 
     static let logWaterAccessibilityLabel = "Log water"
