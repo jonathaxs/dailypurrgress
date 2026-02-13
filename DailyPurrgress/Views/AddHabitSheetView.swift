@@ -8,9 +8,9 @@ struct AddHabitSheetView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var name: String = ""
-    @State private var unit: String = "ml"
-    @State private var goalText: String = "2000"
-    @State private var stepText: String = "250"
+    @State private var unit: String = ""
+    @State private var goalText: String = ""
+    @State private var stepText: String = ""
 
     private var canAddMore: Bool {
         habitsStore.habits.count < HabitsStore.maxHabits
@@ -43,22 +43,27 @@ struct AddHabitSheetView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Habit") {
-                    TextField("Name", text: $name)
+                Section("Habit name") {
+                    TextField("example: Protein", text: $name)
                         .textInputAutocapitalization(.words)
+                }
 
-                    TextField("Unit", text: $unit)
+                Section("Habit measure") {
+                    TextField("example: g", text: $unit)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 }
-
-                Section("Targets") {
-                    TextField("Daily goal", text: $goalText)
-                        .keyboardType(.numberPad)
-
-                    TextField("Log step", text: $stepText)
+                
+                Section("Measure target") {
+                    TextField("example: 140", text: $goalText)
                         .keyboardType(.numberPad)
                 }
+                
+                Section("Log step") {
+                    TextField("example: 20", text: $stepText)
+                        .keyboardType(.numberPad)
+                }
+                
 
                 if !canAddMore {
                     Text("Limit reached (max \(HabitsStore.maxHabits) habits).")
