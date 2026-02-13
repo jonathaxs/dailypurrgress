@@ -13,6 +13,8 @@ struct HabitRowView: View {
     @State private var sliderValue: Double
     @State private var isDragging: Bool = false
 
+    @State private var isConfirmingReset: Bool = false
+
     init(
         habit: Habit,
         onLogStep: @escaping () -> Void,
@@ -89,10 +91,34 @@ private extension HabitRowView {
     var actions: some View {
         HStack(spacing: 10) {
             Button {
+                isConfirmingReset = true
+            } label: {
+                Text(Copy.reset)
+                    .frame(maxWidth: .infinity)
+            }
+            .confirmationDialog(
+                "Reset this habit?",
+                isPresented: $isConfirmingReset,
+                titleVisibility: .visible
+            ) {
+                Button("Reset", role: .destructive) {
+                    onReset()
+                }
+
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This will clear your progress for today.")
+            }
+            .buttonStyle(.bordered)
+            .disabled(habit.current == 0)
+            .accessibilityLabel(Copy.resetTodayAccessibilityLabel)
+            .accessibilityHint(Copy.resetTodayAccessibilityHint)
+
+            Button {
                 guard habit.isComplete == false else { return }
                 onLogStep()
             } label: {
-                Text(Copy.logStep(habit.step))
+                Text(Copy.logStep(habit.step, unit: habit.unit))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
@@ -100,18 +126,7 @@ private extension HabitRowView {
             .opacity(habit.isComplete ? 0.6 : 1.0)
             .accessibilityLabel(Copy.logWaterAccessibilityLabel)
             .accessibilityHint(Copy.logWaterAccessibilityHint)
-            .accessibilityValue(Copy.millilitersValue(habit.step))
-
-            Button {
-                onReset()
-            } label: {
-                Text(Copy.reset)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
-            .disabled(habit.current == 0)
-            .accessibilityLabel(Copy.resetTodayAccessibilityLabel)
-            .accessibilityHint(Copy.resetTodayAccessibilityHint)
+            .accessibilityValue(Copy.unitValue(habit.step, unit: habit.unit))
         }
     }
 
