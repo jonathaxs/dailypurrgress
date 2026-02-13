@@ -8,6 +8,17 @@ import UIKit
 struct TodayMiniView: View {
     @EnvironmentObject private var habitsStore: HabitsStore
 
+    @State private var isPresentingAddHabit: Bool = false
+    @State private var isPresentingManageHabits: Bool = false
+
+    private var isSingleHabitMode: Bool {
+        habitsStore.habits.count <= 1
+    }
+
+    private var canAddHabit: Bool {
+        habitsStore.habits.count < HabitsStore.maxHabits
+    }
+
     private var water: Habit {
         habitsStore.habits.first(where: { $0.isProtected }) ?? .waterDefault()
     }
@@ -17,22 +28,89 @@ struct TodayMiniView: View {
     }
 
     var body: some View {
-        VStack(spacing: 24) {
-            openingCopy
+        NavigationStack {
+            Group {
+                if isSingleHabitMode {
+                    singleHabitContent
+                } else {
+                    multiHabitContent
+                }
+            }
+            .padding()
+            .navigationTitle("DailyPurrgress")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button {
+                        isPresentingAddHabit = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .disabled(!canAddHabit)
 
-            catMood
-
-            progressInfo
-
-            actions
+                    Button {
+                        isPresentingManageHabits = true
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .disabled(habitsStore.habits.count <= 1)
+                }
+            }
+            .sheet(isPresented: $isPresentingAddHabit) {
+                AddHabitSheetView()
+                    .environmentObject(habitsStore)
+            }
+            .sheet(isPresented: $isPresentingManageHabits) {
+                ManageHabitsSheetView()
+                    .environmentObject(habitsStore)
+            }
         }
-        .padding()
     }
 }
 
 // MARK: - Sections
 
 private extension TodayMiniView {
+    var singleHabitContent: some View {
+        VStack(spacing: 24) {
+            openingCopy
+            catMood
+            progressInfo
+            actions
+        }
+    }
+
+    var multiHabitContent: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                openingCopy
+                    .frame(maxWidth: .infinity, alignment: .center)
+
+                ForEach(habitsStore.habits) { habit in
+                    HabitRowView(
+                        habit: habit,
+                        onLogStep: {
+                            triggerHaptic()
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                                habitsStore.logStep(for: habit.id)
+                            }
+                        },
+                        onReset: {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                habitsStore.resetHabit(id: habit.id)
+                            }
+                        },
+                        onSetCurrent: { newValue in
+                            withAnimation(.easeInOut(duration: 0.12)) {
+                                habitsStore.setCurrent(newValue, for: habit.id)
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
+
     var openingCopy: some View {
         Text(Copy.opening)
             .font(.headline)
@@ -54,7 +132,7 @@ private extension TodayMiniView {
             Text(Copy.progressLine(current: water.current, goal: water.goal))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-            
+
             if !water.isComplete {
                 Text(Copy.remaining(water.remaining))
                     .font(.footnote)
