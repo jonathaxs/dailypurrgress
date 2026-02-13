@@ -16,6 +16,11 @@ final class HabitsStore: ObservableObject {
         static let legacyCurrentMLKey = "DailyPurrgress.currentML"
     }
 
+    // MARK: - Save Scheduling
+
+    private let saveSubject = PassthroughSubject<Void, Never>()
+    private var saveCancellable: AnyCancellable?
+
     // MARK: - State
 
     @Published private(set) var habits: [Habit]
@@ -25,6 +30,12 @@ final class HabitsStore: ObservableObject {
     init() {
         self.habits = []
         load()
+
+        saveCancellable = saveSubject
+            .debounce(for: .milliseconds(350), scheduler: RunLoop.main)
+            .sink { [weak self] in
+                self?.saveNow()
+            }
     }
 
     // MARK: - Queries
@@ -42,6 +53,7 @@ final class HabitsStore: ObservableObject {
     @discardableResult
     func addHabit(
         name: String,
+        emoji: String,
         unit: String,
         goal: Int,
         step: Int
@@ -51,6 +63,9 @@ final class HabitsStore: ObservableObject {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedName.isEmpty else { return false }
 
+        let trimmedEmoji = emoji.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedEmoji.isEmpty else { return false }
+
         let trimmedUnit = unit.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedUnit.isEmpty else { return false }
 
@@ -58,6 +73,7 @@ final class HabitsStore: ObservableObject {
 
         let newHabit = Habit(
             name: trimmedName,
+            emoji: trimmedEmoji,
             unit: trimmedUnit,
             goal: goal,
             step: step,
@@ -66,7 +82,7 @@ final class HabitsStore: ObservableObject {
         )
 
         habits.append(newHabit)
-        save()
+        saveNow()
         return true
     }
 
@@ -76,7 +92,7 @@ final class HabitsStore: ObservableObject {
 
         habits.remove(at: index)
         ensureWaterDefaultExists()
-        save()
+        saveNow()
     }
 
     func logStep(for id: UUID) {
@@ -86,7 +102,7 @@ final class HabitsStore: ObservableObject {
         updated[index].logStep()
         habits = updated
 
-        save()
+        saveNow()
     }
 
     func resetHabit(id: UUID) {
@@ -96,7 +112,7 @@ final class HabitsStore: ObservableObject {
         updated[index].reset()
         habits = updated
 
-        save()
+        saveNow()
     }
 
     func setCurrent(_ newValue: Int, for id: UUID) {
@@ -112,7 +128,7 @@ final class HabitsStore: ObservableObject {
         updated[index].current = min(max(snapped, 0), goal)
         habits = updated
 
-        save()
+        scheduleSave()
     }
 
     // MARK: - Persistence
@@ -133,7 +149,7 @@ final class HabitsStore: ObservableObject {
 
                 // Migrate once, then clear legacy key.
                 UserDefaults.standard.removeObject(forKey: Storage.legacyCurrentMLKey)
-                save()
+                saveNow()
                 return
             }
 
@@ -149,7 +165,11 @@ final class HabitsStore: ObservableObject {
         }
     }
 
-    private func save() {
+    private func scheduleSave() {
+        saveSubject.send(())
+    }
+
+    private func saveNow() {
         do {
             let data = try JSONEncoder().encode(habits)
             UserDefaults.standard.set(data, forKey: Storage.habitsKey)
