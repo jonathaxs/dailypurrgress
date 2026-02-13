@@ -10,9 +10,6 @@ struct HabitRowView: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    @State private var sliderValue: Double
-    @State private var isDragging: Bool = false
-
     @State private var isConfirmingReset: Bool = false
 
     init(
@@ -25,7 +22,6 @@ struct HabitRowView: View {
         self.onLogStep = onLogStep
         self.onReset = onReset
         self.onSetCurrent = onSetCurrent
-        _sliderValue = State(initialValue: Double(habit.current))
     }
 
     var body: some View {
@@ -39,10 +35,6 @@ struct HabitRowView: View {
         .padding(14)
         .background(.thinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .onChange(of: habit.current) { _, newValue in
-            guard isDragging == false else { return }
-            sliderValue = Double(newValue)
-        }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(habit.name)
         .accessibilityValue(progressAccessibilityValue)
@@ -54,7 +46,11 @@ struct HabitRowView: View {
 private extension HabitRowView {
     var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .firstTextBaseline) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(habit.emoji)
+                    .font(.headline)
+                    .accessibilityHidden(true)
+
                 Text(habit.name)
                     .font(.headline)
 
@@ -72,16 +68,26 @@ private extension HabitRowView {
         let maxGoal = Double(max(habit.goal, 0))
         let step = Double(max(habit.step, 1))
 
+        let binding = Binding<Double>(
+            get: { Double(habit.current) },
+            set: { newValue in
+                let goal = max(habit.goal, 0)
+                guard goal > 0 else { return }
+
+                let stepInt = max(habit.step, 1)
+                let rounded = Int((newValue / Double(stepInt)).rounded()) * stepInt
+                let clamped = min(max(rounded, 0), goal)
+
+                guard clamped != habit.current else { return }
+                onSetCurrent(clamped)
+            }
+        )
+
         return Slider(
-            value: $sliderValue,
+            value: binding,
             in: 0...maxGoal,
             step: step
-        ) { editing in
-            isDragging = editing
-            if editing == false {
-                commitSliderValue()
-            }
-        }
+        )
         .disabled(maxGoal == 0)
         .accessibilityLabel("Adjust progress")
         .accessibilityValue(sliderAccessibilityValue)
@@ -130,34 +136,6 @@ private extension HabitRowView {
         }
     }
 
-    func commitSliderValue() {
-        let goal = max(habit.goal, 0)
-        guard goal > 0 else {
-            if sliderValue != 0 {
-                sliderValue = 0
-            }
-            return
-        }
-
-        let step = max(habit.step, 1)
-        let rounded = Int((sliderValue / Double(step)).rounded()) * step
-        let clamped = min(max(rounded, 0), goal)
-
-        if clamped != habit.current {
-            if reduceMotion {
-                sliderValue = Double(clamped)
-            } else {
-                withAnimation(.easeInOut(duration: 0.12)) {
-                    sliderValue = Double(clamped)
-                }
-            }
-
-            onSetCurrent(clamped)
-        } else {
-            sliderValue = Double(clamped)
-        }
-    }
-
     var progressLine: String {
         "\(habit.current) / \(habit.goal) \(habit.unit)"
     }
@@ -167,7 +145,7 @@ private extension HabitRowView {
     }
 
     var sliderAccessibilityValue: String {
-        "\(Int(sliderValue)) \(habit.unit)"
+        "\(habit.current) \(habit.unit)"
     }
 }
 
@@ -175,7 +153,7 @@ private extension HabitRowView {
 
 #Preview {
     HabitRowView(
-        habit: .init(name: "Water", unit: "ml", goal: 2000, step: 250, current: 750, isProtected: true),
+        habit: .init(name: "Water", emoji: "💧", unit: "ml", goal: 2000, step: 250, current: 750, isProtected: true),
         onLogStep: {},
         onReset: {},
         onSetCurrent: { _ in }
