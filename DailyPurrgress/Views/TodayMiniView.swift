@@ -184,61 +184,86 @@ private extension TodayMiniView {
 
     var actions: some View {
         VStack(spacing: 14) {
-            Text(water.name)
-                .font(.title3)
+            Text(water.emoji + water.name)
+                .font(.title2)
                 .fontWeight(.semibold)
                 .frame(maxWidth: .infinity, alignment: .center)
 
-            Button {
-                guard !water.isComplete else { return }
-                triggerHaptic()
-                withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
-                    habitsStore.logStep(for: water.id)
+            Slider(
+                value: Binding(
+                    get: { Double(water.current) },
+                    set: { newValue in
+                        let goal = max(water.goal, 0)
+                        guard goal > 0 else { return }
+
+                        let step = max(water.step, 1)
+                        let rounded = Int((newValue / Double(step)).rounded()) * step
+                        let clamped = min(max(rounded, 0), goal)
+
+                        habitsStore.setCurrent(clamped, for: water.id)
+                    }
+                ),
+                in: 0...Double(max(water.goal, 0)),
+                step: Double(max(water.step, 1))
+            )
+            .disabled(water.goal <= 0)
+            .frame(maxWidth: 250)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .accessibilityLabel("Adjust progress")
+            .accessibilityValue("\(water.current) \(water.unit)")
+            .accessibilityHint("Swipe up or down to change")
+
+            HStack(spacing: 12) {
+                Button {
+                    isConfirmingResetWater = true
+                } label: {
+                    Text(Copy.reset)
+                        .frame(width: 80, height: 40)
                 }
-            } label: {
-                Text(Copy.logStep(water.step, unit: water.unit))
-                    .frame(minHeight: 40)
-                    .frame(maxWidth: 200)
+                .buttonStyle(.bordered)
+                .disabled(water.current == 0)
+                .accessibilityLabel(Copy.resetTodayAccessibilityLabel)
+                .accessibilityHint(Copy.resetTodayAccessibilityHint)
+                .confirmationDialog(
+                    "Reset today?",
+                    isPresented: $isConfirmingResetWater,
+                    titleVisibility: .visible
+                ) {
+                    Button("Reset", role: .destructive) {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            habitsStore.resetHabit(id: water.id)
+                        }
+                    }
+
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("This will clear your progress for today.")
+                }
+
+                Button {
+                    guard !water.isComplete else { return }
+                    triggerHaptic()
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                        habitsStore.logStep(for: water.id)
+                    }
+                } label: {
+                    Text(Copy.logStep(water.step, unit: water.unit))
+                        .frame(width: 120, height: 40)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(water.isComplete)
+                .opacity(water.isComplete ? 0.6 : 1.0)
+                .accessibilityLabel(Copy.logWaterAccessibilityLabel)
+                .accessibilityValue(Copy.unitValue(water.step, unit: water.unit))
+                .accessibilityHint(Copy.logWaterAccessibilityHint)
             }
             .frame(maxWidth: .infinity, alignment: .center)
-            .buttonStyle(.borderedProminent)
-            .disabled(water.isComplete)
-            .opacity(water.isComplete ? 0.6 : 1.0)
-            .accessibilityLabel(Copy.logWaterAccessibilityLabel)
-            .accessibilityValue(Copy.unitValue(water.step, unit: water.unit))
-            .accessibilityHint(Copy.logWaterAccessibilityHint)
 
             if water.isComplete {
                 Text(Copy.goalReached)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
-
-            Button {
-                isConfirmingResetWater = true
-            } label: {
-                Text(Copy.reset)
-                    .frame(width: 100, height: 30)
-            }
-            .confirmationDialog(
-                "Reset today?",
-                isPresented: $isConfirmingResetWater,
-                titleVisibility: .visible
-            ) {
-                Button("Reset", role: .destructive) {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        habitsStore.resetHabit(id: water.id)
-                    }
-                }
-
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("This will clear your progress for today.")
-            }
-            .buttonStyle(.bordered)
-            .disabled(water.current == 0)
-            .accessibilityLabel(Copy.resetTodayAccessibilityLabel)
-            .accessibilityHint(Copy.resetTodayAccessibilityHint)
         }
     }
 }
