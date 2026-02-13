@@ -13,6 +13,7 @@ final class HabitsStore: ObservableObject {
 
     private enum Storage {
         static let habitsKey = "DailyPurrgress.habits"
+        static let legacyCurrentMLKey = "DailyPurrgress.currentML"
     }
 
     // MARK: - State
@@ -98,6 +99,20 @@ final class HabitsStore: ObservableObject {
         }
 
         guard let data = UserDefaults.standard.data(forKey: Storage.habitsKey) else {
+            if UserDefaults.standard.object(forKey: Storage.legacyCurrentMLKey) != nil {
+                let stored = UserDefaults.standard.integer(forKey: Storage.legacyCurrentMLKey)
+
+                var water = Habit.waterDefault()
+                water.current = min(max(stored, 0), water.goal)
+
+                habits = [water]
+
+                // Migrate once, then clear legacy key.
+                UserDefaults.standard.removeObject(forKey: Storage.legacyCurrentMLKey)
+                save()
+                return
+            }
+
             habits = []
             return
         }
