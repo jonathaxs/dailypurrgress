@@ -15,13 +15,13 @@ enum CatTier: Int, CaseIterable, Identifiable {
     var emoji: String {
         switch self {
         case .low:
-            return "😿"
+            return "🐱"
         case .medium:
             return "😺"
         case .high:
             return "🐈"
         case .complete:
-            return "🐈‍⬛"
+            return "⭐️"
         }
     }
 
