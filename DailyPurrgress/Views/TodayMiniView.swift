@@ -11,6 +11,8 @@ struct TodayMiniView: View {
     @State private var isPresentingAddHabit: Bool = false
     @State private var isPresentingManageHabits: Bool = false
 
+    @State private var isConfirmingResetWater: Bool = false
+
     private var isSingleHabitMode: Bool {
         habitsStore.habits.count <= 1
     }
@@ -27,6 +29,21 @@ struct TodayMiniView: View {
         CatTier.from(progress: water.progress)
     }
 
+    private var overallProgress: Double {
+        let valid = habitsStore.habits.filter { $0.goal > 0 }
+        guard valid.isEmpty == false else { return 0 }
+
+        let sum = valid.reduce(0.0) { partial, habit in
+            partial + habit.progress
+        }
+
+        return min(max(sum / Double(valid.count), 0), 1)
+    }
+
+    private var overallTier: CatTier {
+        CatTier.from(progress: overallProgress)
+    }
+
     var body: some View {
         NavigationStack {
             Group {
@@ -40,20 +57,22 @@ struct TodayMiniView: View {
             .navigationTitle("DailyPurrgress")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    Button {
-                        isPresentingAddHabit = true
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .disabled(!canAddHabit)
-
+                ToolbarItem(placement: .topBarLeading) {
                     Button {
                         isPresentingManageHabits = true
                     } label: {
                         Image(systemName: "trash")
                     }
                     .disabled(habitsStore.habits.count <= 1)
+                }
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isPresentingAddHabit = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .disabled(!canAddHabit)
                 }
             }
             .sheet(isPresented: $isPresentingAddHabit) {
@@ -85,6 +104,17 @@ private extension TodayMiniView {
             VStack(alignment: .leading, spacing: 16) {
                 openingCopy
                     .frame(maxWidth: .infinity, alignment: .center)
+
+                VStack(spacing: 12) {
+                    CatMoodView(tier: overallTier)
+
+                    ProgressRingView(
+                        progress: overallProgress,
+                        size: 108,
+                        lineWidth: 12
+                    )
+                }
+                .frame(maxWidth: .infinity)
 
                 ForEach(habitsStore.habits) { habit in
                     HabitRowView(
@@ -129,16 +159,16 @@ private extension TodayMiniView {
                 lineWidth: 14
             )
 
-            Text(Copy.progressLine(current: water.current, goal: water.goal))
+            Text(Copy.progressLine(current: water.current, goal: water.goal, unit: water.unit))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
             if !water.isComplete {
-                Text(Copy.remaining(water.remaining))
+                Text(Copy.remaining(water.remaining, unit: water.unit))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .accessibilityLabel(Copy.remainingAccessibilityLabel)
-                    .accessibilityValue(Copy.remaining(water.remaining))
+                    .accessibilityValue(Copy.remaining(water.remaining, unit: water.unit))
                     .accessibilityHint(Copy.remainingAccessibilityHint)
             }
         }
@@ -154,6 +184,11 @@ private extension TodayMiniView {
 
     var actions: some View {
         VStack(spacing: 14) {
+            Text(water.name)
+                .font(.title3)
+                .fontWeight(.semibold)
+                .frame(maxWidth: .infinity, alignment: .center)
+
             Button {
                 guard !water.isComplete else { return }
                 triggerHaptic()
@@ -161,14 +196,16 @@ private extension TodayMiniView {
                     habitsStore.logStep(for: water.id)
                 }
             } label: {
-                Text(Copy.logStep(water.step))
-                    .frame(maxWidth: .infinity)
+                Text(Copy.logStep(water.step, unit: water.unit))
+                    .frame(minHeight: 40)
+                    .frame(maxWidth: 200)
             }
+            .frame(maxWidth: .infinity, alignment: .center)
             .buttonStyle(.borderedProminent)
             .disabled(water.isComplete)
             .opacity(water.isComplete ? 0.6 : 1.0)
             .accessibilityLabel(Copy.logWaterAccessibilityLabel)
-            .accessibilityValue(Copy.millilitersValue(water.step))
+            .accessibilityValue(Copy.unitValue(water.step, unit: water.unit))
             .accessibilityHint(Copy.logWaterAccessibilityHint)
 
             if water.isComplete {
@@ -177,10 +214,26 @@ private extension TodayMiniView {
                     .foregroundStyle(.secondary)
             }
 
-            Button(Copy.reset) {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    habitsStore.resetHabit(id: water.id)
+            Button {
+                isConfirmingResetWater = true
+            } label: {
+                Text(Copy.reset)
+                    .frame(width: 100, height: 30)
+            }
+            .confirmationDialog(
+                "Reset today?",
+                isPresented: $isConfirmingResetWater,
+                titleVisibility: .visible
+            ) {
+                Button("Reset", role: .destructive) {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        habitsStore.resetHabit(id: water.id)
+                    }
                 }
+
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This will clear your progress for today.")
             }
             .buttonStyle(.bordered)
             .disabled(water.current == 0)
