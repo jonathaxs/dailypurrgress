@@ -11,6 +11,7 @@ struct AddHabitSheetView: View {
     @State private var unit: String = ""
     @State private var goalText: String = ""
     @State private var stepText: String = ""
+    @State private var emoji: String = ""
 
     private var canAddMore: Bool {
         habitsStore.habits.count < HabitsStore.maxHabits
@@ -32,10 +33,15 @@ struct AddHabitSheetView: View {
         unit.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    private var trimmedEmoji: String {
+        String(emoji.trimmingCharacters(in: .whitespacesAndNewlines).prefix(1))
+    }
+
     private var isValid: Bool {
         guard canAddMore else { return false }
         guard !trimmedName.isEmpty else { return false }
         guard !trimmedUnit.isEmpty else { return false }
+        guard !trimmedEmoji.isEmpty else { return false }
         guard goal > 0, step > 0, step <= goal else { return false }
         return true
     }
@@ -43,6 +49,12 @@ struct AddHabitSheetView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section("Habit emoji") {
+                    TextField("example: 💪", text: $emoji)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                }
+                
                 Section("Habit name") {
                     TextField("example: Protein", text: $name)
                         .textInputAutocapitalization(.words)
@@ -90,6 +102,7 @@ struct AddHabitSheetView: View {
                     Button("Save") {
                         let created = habitsStore.addHabit(
                             name: trimmedName,
+                            emoji: trimmedEmoji,
                             unit: trimmedUnit,
                             goal: goal,
                             step: step
