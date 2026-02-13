@@ -11,6 +11,7 @@ struct Habit: Identifiable, Codable, Equatable {
     // MARK: - Content
 
     var name: String
+    var emoji: String
     var unit: String
 
     // MARK: - Targets
@@ -32,6 +33,7 @@ struct Habit: Identifiable, Codable, Equatable {
     init(
         id: UUID = UUID(),
         name: String,
+        emoji: String,
         unit: String,
         goal: Int,
         step: Int,
@@ -40,6 +42,7 @@ struct Habit: Identifiable, Codable, Equatable {
     ) {
         self.id = id
         self.name = name
+        self.emoji = emoji.isEmpty ? "✨" : String(emoji.prefix(1))
         self.unit = unit
         self.goal = max(goal, 0)
         self.step = max(step, 0)
@@ -100,6 +103,7 @@ extension Habit {
     static func waterDefault() -> Habit {
         Habit(
             name: "Water",
+            emoji: "💧",
             unit: "ml",
             goal: 2000,
             step: 250,
