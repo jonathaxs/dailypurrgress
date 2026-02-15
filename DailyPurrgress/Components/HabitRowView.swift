@@ -130,8 +130,8 @@ private extension HabitRowView {
             .buttonStyle(.borderedProminent)
             .disabled(habit.isComplete)
             .opacity(habit.isComplete ? 0.6 : 1.0)
-            .accessibilityLabel(Copy.logWaterAccessibilityLabel)
-            .accessibilityHint(Copy.logWaterAccessibilityHint)
+            .accessibilityLabel(Copy.logAccessibilityLabel(for: habit.name))
+            .accessibilityHint(Copy.logAccessibilityHint(for: habit.name))
             .accessibilityValue(Copy.unitValue(habit.step, unit: habit.unit))
         }
     }
