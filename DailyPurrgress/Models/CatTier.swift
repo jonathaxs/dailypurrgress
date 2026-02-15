@@ -21,7 +21,7 @@ enum CatTier: Int, CaseIterable, Identifiable {
         case .high:
             return "🐈"
         case .complete:
-            return "⭐️"
+            return "🐆"
         }
     }
 
