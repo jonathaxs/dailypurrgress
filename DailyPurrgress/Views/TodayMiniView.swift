@@ -6,7 +6,8 @@ struct TodayMiniView: View {
     @EnvironmentObject private var habitsStore: HabitsStore
 
     @State private var isPresentingAddHabit: Bool = false
-    @State private var isPresentingManageHabits: Bool = false
+    @State private var isPresentingDeleteHabit: Bool = false
+    @State private var isPresentingEditHabit: Bool = false
 
     @State private var hapticTrigger: Int = 0
 
@@ -34,44 +35,19 @@ struct TodayMiniView: View {
             content
                 .padding()
                 .sensoryFeedback(.impact, trigger: hapticTrigger)
-            .navigationTitle("DailyPurrgress")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        isPresentingManageHabits = true
-                    } label: {
-                        Image(systemName: "trash")
-                    }
-                    .disabled(habitsStore.habits.count <= 1)
+                .sheet(isPresented: $isPresentingAddHabit) {
+                    AddHabitSheetView()
+                        .environmentObject(habitsStore)
                 }
-
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    Button {
-                        // Placeholder: Edit Habit sheet will be implemented next.
-                    } label: {
-                        Image(systemName: "pencil")
-                    }
-                    .disabled(true)
-                    .opacity(0.6)
-                    .accessibilityLabel("Edit habits")
-
-                    Button {
-                        isPresentingAddHabit = true
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .disabled(!canAddHabit)
+                .sheet(isPresented: $isPresentingDeleteHabit) {
+                    DeleteHabitSheetView()
+                        .environmentObject(habitsStore)
                 }
-            }
-            .sheet(isPresented: $isPresentingAddHabit) {
-                AddHabitSheetView()
-                    .environmentObject(habitsStore)
-            }
-            .sheet(isPresented: $isPresentingManageHabits) {
-                ManageHabitsSheetView()
-                    .environmentObject(habitsStore)
-            }
+                .sheet(isPresented: $isPresentingEditHabit) {
+                    EditHabitSheetView()
+                        .environmentObject(habitsStore)
+                }
+                .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
@@ -81,11 +57,44 @@ struct TodayMiniView: View {
 private extension TodayMiniView {
     var content: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 15) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 12) {
+                    Button {
+                        isPresentingDeleteHabit = true
+                    } label: {
+                        Text("Delete")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.red)
+
+                    Button {
+                        isPresentingEditHabit = true
+                    } label: {
+                        Text("Edit")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.green)
+
+                    Button {
+                        isPresentingAddHabit = true
+                    } label: {
+                        Text("Add")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(!canAddHabit)
+                }
+                .frame(maxWidth: 300)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .frame(height: 60)
+                .controlSize(.regular)
+
                 openingCopy
                     .frame(maxWidth: .infinity, alignment: .center)
 
-                VStack(spacing: 12) {
+                HStack(spacing: 18) {
                     CatMoodView(tier: overallTier)
 
                     ProgressRingView(
@@ -95,6 +104,7 @@ private extension TodayMiniView {
                     )
                 }
                 .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, alignment: .center)
 
                 Spacer()
                     .frame(height: 15)
