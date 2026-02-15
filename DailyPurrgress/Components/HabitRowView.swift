@@ -100,20 +100,20 @@ private extension HabitRowView {
                 isConfirmingReset = true
             } label: {
                 Text(Copy.reset)
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity, minHeight: 25)
             }
             .confirmationDialog(
-                "Reset this habit?",
+                Copy.resetConfirmationTitle(for:"\(habit.emoji)\(habit.name)"),
                 isPresented: $isConfirmingReset,
                 titleVisibility: .visible
             ) {
-                Button("Reset", role: .destructive) {
+                Button(Copy.reset, role: .destructive) {
                     onReset()
                 }
 
-                Button("Cancel", role: .cancel) {}
+                Button(Copy.cancel, role: .cancel) {}
             } message: {
-                Text("This will clear your progress for today.")
+                Text(Copy.resetConfirmationMessage(for: habit.name))
             }
             .buttonStyle(.bordered)
             .disabled(habit.current == 0)
@@ -125,7 +125,7 @@ private extension HabitRowView {
                 onLogStep()
             } label: {
                 Text(Copy.logStep(habit.step, unit: habit.unit))
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity, minHeight: 25)
             }
             .buttonStyle(.borderedProminent)
             .disabled(habit.isComplete)
