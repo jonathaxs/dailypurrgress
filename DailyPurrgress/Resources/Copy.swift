@@ -43,6 +43,15 @@ struct Copy {
     }
 
     static let reset = "Reset"
+    static let cancel = "Cancel"
+
+    static func resetConfirmationTitle(for habitName: String) -> String {
+        "Reset \(habitName)?"
+    }
+
+    static func resetConfirmationMessage(for habitName: String) -> String {
+        "This will clear your \(habitName) progress for today."
+    }
 
     // MARK: - Accessibility
 
