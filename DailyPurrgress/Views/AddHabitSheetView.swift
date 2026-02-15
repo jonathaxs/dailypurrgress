@@ -82,12 +82,6 @@ struct AddHabitSheetView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-
-                if canAddMore {
-                    Text("Tip: Keep it small and simple.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
             }
             .navigationTitle("Add Habit")
             .navigationBarTitleDisplayMode(.inline)
