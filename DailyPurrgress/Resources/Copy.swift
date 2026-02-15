@@ -64,8 +64,13 @@ struct Copy {
         "\(amount) \(unit)"
     }
 
-    static let logWaterAccessibilityLabel = "Log water"
-    static let logWaterAccessibilityHint = "Adds water toward your daily goal"
+    static func logAccessibilityLabel(for habitName: String) -> String {
+        "Log \(habitName)"
+    }
+
+    static func logAccessibilityHint(for habitName: String) -> String {
+        "Adds progress to your \(habitName) goal"
+    }
 
     static let resetTodayAccessibilityLabel = "Reset today"
     static let resetTodayAccessibilityHint = "Clears your progress for today"
