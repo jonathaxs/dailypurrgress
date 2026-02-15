@@ -1,6 +1,5 @@
 // HabitStore.swift ⌘ @jonathaxs
 
-
 import Foundation
 import Combine
 
@@ -129,6 +128,53 @@ final class HabitsStore: ObservableObject {
         habits = updated
 
         scheduleSave()
+    }
+
+    @discardableResult
+    func updateHabit(
+        id: UUID,
+        name: String,
+        emoji: String,
+        unit: String,
+        goal: Int,
+        step: Int
+    ) -> Bool {
+        guard let index = habits.firstIndex(where: { $0.id == id }) else { return false }
+
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedEmoji = emoji.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedUnit = unit.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !trimmedName.isEmpty,
+              !trimmedEmoji.isEmpty,
+              !trimmedUnit.isEmpty,
+              goal > 0,
+              step > 0,
+              step <= goal
+        else { return false }
+
+        var updated = habits
+
+        var habit = updated[index]
+        habit.name = trimmedName
+        habit.emoji = String(trimmedEmoji.prefix(1))
+        habit.unit = trimmedUnit
+        habit.goal = goal
+        habit.step = step
+
+        // Clamp current to new goal and align to step
+        let clampedCurrent = min(max(habit.current, 0), goal)
+        let snapped = (goal > 0)
+            ? (Int((Double(clampedCurrent) / Double(step)).rounded()) * step)
+            : 0
+
+        habit.current = min(max(snapped, 0), goal)
+
+        updated[index] = habit
+        habits = updated
+
+        saveNow()
+        return true
     }
 
     // MARK: - Persistence
