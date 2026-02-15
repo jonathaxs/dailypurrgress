@@ -46,7 +46,16 @@ struct TodayMiniView: View {
                     .disabled(habitsStore.habits.count <= 1)
                 }
 
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button {
+                        // Placeholder: Edit Habit sheet will be implemented next.
+                    } label: {
+                        Image(systemName: "pencil")
+                    }
+                    .disabled(true)
+                    .opacity(0.6)
+                    .accessibilityLabel("Edit habits")
+
                     Button {
                         isPresentingAddHabit = true
                     } label: {
