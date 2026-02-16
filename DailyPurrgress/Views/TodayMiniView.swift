@@ -5,15 +5,10 @@ import SwiftUI
 struct TodayMiniView: View {
     @EnvironmentObject private var habitsStore: HabitsStore
 
-    @State private var isPresentingAddHabit: Bool = false
-    @State private var isPresentingDeleteHabit: Bool = false
     @State private var isPresentingEditHabit: Bool = false
+    @State private var isConfirmingResetAll: Bool = false
 
     @State private var hapticTrigger: Int = 0
-
-    private var canAddHabit: Bool {
-        habitsStore.habits.count < HabitsStore.maxHabits
-    }
 
     private var overallProgress: Double {
         let valid = habitsStore.habits.filter { $0.goal > 0 }
@@ -35,14 +30,6 @@ struct TodayMiniView: View {
             content
                 .padding()
                 .sensoryFeedback(.impact, trigger: hapticTrigger)
-                .sheet(isPresented: $isPresentingAddHabit) {
-                    AddHabitSheetView()
-                        .environmentObject(habitsStore)
-                }
-                .sheet(isPresented: $isPresentingDeleteHabit) {
-                    DeleteHabitSheetView()
-                        .environmentObject(habitsStore)
-                }
                 .sheet(isPresented: $isPresentingEditHabit) {
                     EditHabitSheetView()
                         .environmentObject(habitsStore)
@@ -58,39 +45,6 @@ private extension TodayMiniView {
     var content: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 12) {
-                    Button {
-                        isPresentingDeleteHabit = true
-                    } label: {
-                        Text("Delete")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.red)
-
-                    Button {
-                        isPresentingEditHabit = true
-                    } label: {
-                        Text("Edit")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.green)
-
-                    Button {
-                        isPresentingAddHabit = true
-                    } label: {
-                        Text("Add")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(!canAddHabit)
-                }
-                .frame(maxWidth: 300)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .frame(height: 60)
-                .controlSize(.regular)
-
                 openingCopy
                     .frame(maxWidth: .infinity, alignment: .center)
 
@@ -131,6 +85,40 @@ private extension TodayMiniView {
                     )
                     .frame(maxWidth: 330)
                     .frame(maxWidth: .infinity, alignment: .center)
+                }
+
+                Spacer()
+                    .frame(height: 15)
+
+                HStack(spacing: 12) {
+                    Button("Reset All") {
+                        isConfirmingResetAll = true
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.red)
+
+                    Button("Edit Habits") {
+                        isPresentingEditHabit = true
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.green)
+                }
+                .frame(maxWidth: 330)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .controlSize(.large)
+                .confirmationDialog(
+                    "Reset all habits?",
+                    isPresented: $isConfirmingResetAll,
+                    titleVisibility: .visible
+                ) {
+                    Button("Reset All", role: .destructive) {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            habitsStore.resetAll()
+                        }
+                    }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("This will reset the progress for all habits.")
                 }
             }
         }

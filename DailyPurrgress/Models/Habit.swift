@@ -1,6 +1,5 @@
 // Habit.swift ⌘ @jonathaxs
 
-
 import Foundation
 
 struct Habit: Identifiable, Codable, Equatable {
@@ -109,6 +108,18 @@ extension Habit {
             step: 250,
             current: 0,
             isProtected: true
+        )
+    }
+
+    static func proteinDefault() -> Habit {
+        Habit(
+            name: "Protein",
+            emoji: "🥩",
+            unit: "g",
+            goal: 140,
+            step: 20,
+            current: 0,
+            isProtected: false
         )
     }
 }

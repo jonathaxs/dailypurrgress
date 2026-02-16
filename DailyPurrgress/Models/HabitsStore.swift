@@ -13,6 +13,7 @@ final class HabitsStore: ObservableObject {
     private enum Storage {
         static let habitsKey = "DailyPurrgress.habits"
         static let legacyCurrentMLKey = "DailyPurrgress.currentML"
+        static let didDeleteProteinKey = "DailyPurrgress.didDeleteProtein"
     }
 
     // MARK: - Save Scheduling
@@ -47,6 +48,19 @@ final class HabitsStore: ObservableObject {
         habits.first(where: { $0.id == id })
     }
 
+    private func normalizedName(_ name: String) -> String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+    }
+
+    private func isProteinName(_ name: String) -> Bool {
+        normalizedName(name) == "protein"
+    }
+
+    private var didDeleteProtein: Bool {
+        get { UserDefaults.standard.bool(forKey: Storage.didDeleteProteinKey) }
+        set { UserDefaults.standard.set(newValue, forKey: Storage.didDeleteProteinKey) }
+    }
+
     // MARK: - Actions
 
     @discardableResult
@@ -61,6 +75,10 @@ final class HabitsStore: ObservableObject {
 
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedName.isEmpty else { return false }
+
+        if isProteinName(trimmedName) {
+            didDeleteProtein = false
+        }
 
         let trimmedEmoji = emoji.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedEmoji.isEmpty else { return false }
@@ -87,10 +105,15 @@ final class HabitsStore: ObservableObject {
 
     func deleteHabit(id: UUID) {
         guard let index = habits.firstIndex(where: { $0.id == id }) else { return }
-        guard habits[index].isProtected == false else { return }
+        let habit = habits[index]
+        guard habit.isProtected == false else { return }
+
+        if isProteinName(habit.name) {
+            didDeleteProtein = true
+        }
 
         habits.remove(at: index)
-        ensureWaterDefaultExists()
+        ensureDefaultHabitsExist()
         saveNow()
     }
 
@@ -109,6 +132,18 @@ final class HabitsStore: ObservableObject {
 
         var updated = habits
         updated[index].reset()
+        habits = updated
+
+        saveNow()
+    }
+
+    func resetAll() {
+        guard habits.isEmpty == false else { return }
+
+        var updated = habits
+        for index in updated.indices {
+            updated[index].current = 0
+        }
         habits = updated
 
         saveNow()
@@ -144,6 +179,10 @@ final class HabitsStore: ObservableObject {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedEmoji = emoji.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedUnit = unit.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if isProteinName(trimmedName) {
+            didDeleteProtein = false
+        }
 
         guard !trimmedName.isEmpty,
               !trimmedEmoji.isEmpty,
@@ -181,7 +220,7 @@ final class HabitsStore: ObservableObject {
 
     private func load() {
         defer {
-            ensureWaterDefaultExists()
+            ensureDefaultHabitsExist()
         }
 
         guard let data = UserDefaults.standard.data(forKey: Storage.habitsKey) else {
@@ -224,8 +263,38 @@ final class HabitsStore: ObservableObject {
         }
     }
 
-    private func ensureWaterDefaultExists() {
-        if habits.contains(where: { $0.isProtected }) { return }
-        habits.insert(.waterDefault(), at: 0)
+    private func ensureDefaultHabitsExist() {
+        // Water (protected)
+        if habits.contains(where: { $0.isProtected }) == false {
+            habits.insert(.waterDefault(), at: 0)
+        }
+
+        // Protein (deletable)
+        let hasProtein = habits.contains { isProteinName($0.name) }
+        if hasProtein {
+            return
+        }
+
+        // If the user deleted Protein, do not auto-recreate it.
+        guard didDeleteProtein == false else { return }
+        guard habits.count < Self.maxHabits else { return }
+
+        let protein = Habit(
+            name: "Protein",
+            emoji: "🥩",
+            unit: "g",
+            goal: 140,
+            step: 20,
+            current: 0,
+            isProtected: false
+        )
+
+        // Prefer to keep Protein right after Water.
+        if let waterIndex = habits.firstIndex(where: { $0.isProtected }) {
+            let insertIndex = min(waterIndex + 1, habits.count)
+            habits.insert(protein, at: insertIndex)
+        } else {
+            habits.insert(protein, at: 0)
+        }
     }
 }

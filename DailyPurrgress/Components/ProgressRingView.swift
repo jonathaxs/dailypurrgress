@@ -15,6 +15,19 @@ struct ProgressRingView: View {
         min(max(progress, 0), 1)
     }
 
+    private var ringColor: Color {
+        switch clampedProgress {
+        case ..<0.30:
+            return .red
+        case ..<0.60:
+            return .orange
+        case ..<1.0:
+            return .green
+        default:
+            return .blue
+        }
+    }
+
     var body: some View {
         ZStack {
             Circle()
@@ -23,7 +36,7 @@ struct ProgressRingView: View {
             Circle()
                 .trim(from: 0, to: clampedProgress)
                 .stroke(
-                    Color.accentColor,
+                    ringColor,
                     style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
