@@ -13,7 +13,7 @@ final class HabitsStore: ObservableObject {
     private enum Storage {
         static let habitsKey = "DailyPurrgress.habits"
         static let legacyCurrentMLKey = "DailyPurrgress.currentML"
-        static let didDeleteProteinKey = "DailyPurrgress.didDeleteProtein"
+        static let didDeleteReadKey = "DailyPurrgress.didDeleteRead"
     }
 
     // MARK: - Save Scheduling
@@ -52,13 +52,13 @@ final class HabitsStore: ObservableObject {
         name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 
-    private func isProteinName(_ name: String) -> Bool {
-        normalizedName(name) == "protein"
+    private func isReadName(_ name: String) -> Bool {
+        normalizedName(name) == "read"
     }
 
-    private var didDeleteProtein: Bool {
-        get { UserDefaults.standard.bool(forKey: Storage.didDeleteProteinKey) }
-        set { UserDefaults.standard.set(newValue, forKey: Storage.didDeleteProteinKey) }
+    private var didDeleteRead: Bool {
+        get { UserDefaults.standard.bool(forKey: Storage.didDeleteReadKey) }
+        set { UserDefaults.standard.set(newValue, forKey: Storage.didDeleteReadKey) }
     }
 
     // MARK: - Actions
@@ -76,8 +76,8 @@ final class HabitsStore: ObservableObject {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedName.isEmpty else { return false }
 
-        if isProteinName(trimmedName) {
-            didDeleteProtein = false
+        if isReadName(trimmedName) {
+            didDeleteRead = false
         }
 
         let trimmedEmoji = emoji.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -108,8 +108,8 @@ final class HabitsStore: ObservableObject {
         let habit = habits[index]
         guard habit.isProtected == false else { return }
 
-        if isProteinName(habit.name) {
-            didDeleteProtein = true
+        if isReadName(habit.name) {
+            didDeleteRead = true
         }
 
         habits.remove(at: index)
@@ -180,8 +180,8 @@ final class HabitsStore: ObservableObject {
         let trimmedEmoji = emoji.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedUnit = unit.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if isProteinName(trimmedName) {
-            didDeleteProtein = false
+        if isReadName(trimmedName) {
+            didDeleteRead = false
         }
 
         guard !trimmedName.isEmpty,
@@ -269,32 +269,32 @@ final class HabitsStore: ObservableObject {
             habits.insert(.waterDefault(), at: 0)
         }
 
-        // Protein (deletable)
-        let hasProtein = habits.contains { isProteinName($0.name) }
-        if hasProtein {
+        // Read (deletable)
+        let hasRead = habits.contains { isReadName($0.name) }
+        if hasRead {
             return
         }
 
-        // If the user deleted Protein, do not auto-recreate it.
-        guard didDeleteProtein == false else { return }
+        // If the user deleted Read, do not auto-recreate it.
+        guard didDeleteRead == false else { return }
         guard habits.count < Self.maxHabits else { return }
 
-        let protein = Habit(
-            name: "Protein",
-            emoji: "🥩",
-            unit: "g",
-            goal: 140,
-            step: 20,
+        let read = Habit(
+            name: "Read",
+            emoji: "📘",
+            unit: "pages",
+            goal: 20,
+            step: 2,
             current: 0,
             isProtected: false
         )
 
-        // Prefer to keep Protein right after Water.
+        // Prefer to keep Read right after Water.
         if let waterIndex = habits.firstIndex(where: { $0.isProtected }) {
             let insertIndex = min(waterIndex + 1, habits.count)
-            habits.insert(protein, at: insertIndex)
+            habits.insert(read, at: insertIndex)
         } else {
-            habits.insert(protein, at: 0)
+            habits.insert(read, at: 0)
         }
     }
 }
