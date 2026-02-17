@@ -28,31 +28,34 @@ struct EditHabitSheetView: View {
                     }
                     .onDelete(perform: delete)
                 } header: {
-                    Text("Your Habits")
+                    Text(NSLocalizedString("sheet.editHabits.section.title", comment: "Header title for habits list section"))
                 } footer: {
-                    Text("Water is your default habit and can’t be deleted.")
+                    Text(NSLocalizedString("sheet.editHabits.footer.waterProtected", comment: "Footer note explaining that Water cannot be deleted"))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .padding(.top, 20)
                 }
             }
             .environment(\.editMode, $editMode)
+            .navigationTitle(NSLocalizedString("sheet.editHabits.title", comment: "Edit habits sheet navigation title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Back") {
+                    Button(NSLocalizedString("action.back", comment: "Back button title")) {
                         dismiss()
                     }
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack(spacing: 12) {
-                        Button("Add") {
+                        Button(NSLocalizedString("action.add", comment: "Add button title")) {
                             isPresentingAddHabit = true
                         }
                         .disabled(!canAddMore)
-                        
-                        Button(editMode.isEditing ? "Done" : "Delete") {
+
+                        Button(editMode.isEditing
+                               ? NSLocalizedString("action.done", comment: "Done button title")
+                               : NSLocalizedString("action.delete", comment: "Enter delete mode button title")) {
                             withAnimation(.easeInOut(duration: 0.15)) {
                                 editMode = editMode.isEditing ? .inactive : .active
                             }
@@ -168,43 +171,43 @@ private struct EditHabitDetailView: View {
 
     var body: some View {
         Form {
-            Section() {
+            Section {
                 TextField("", text: $emoji)
             } header: {
-                Text("Emoji")
+                Text(NSLocalizedString("sheet.editHabit.field.emoji", comment: "Edit habit field label: Emoji"))
             }
 
-            Section() {
+            Section {
                 TextField("", text: $name)
             } header: {
-                Text("Name")
+                Text(NSLocalizedString("sheet.editHabit.field.name", comment: "Edit habit field label: Name"))
             }
 
-            Section() {
+            Section {
                 TextField("", text: $unit)
             } header: {
-                Text("Measure")
+                Text(NSLocalizedString("sheet.editHabit.field.measure", comment: "Edit habit field label: Measure"))
             }
 
-            Section() {
+            Section {
                 TextField("", text: $goalText)
                     .keyboardType(.numberPad)
             } header: {
-                Text("Target")
+                Text(NSLocalizedString("sheet.editHabit.field.target", comment: "Edit habit field label: Target"))
             }
 
             Section {
                 TextField("", text: $stepText)
                     .keyboardType(.numberPad)
             } header: {
-                Text("Log step")
+                Text(NSLocalizedString("sheet.editHabit.field.logStep", comment: "Edit habit field label: Log step"))
             }
         }
         .navigationTitle(habit.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
+                Button(NSLocalizedString("action.save", comment: "Save button title")) {
                     let didUpdate = habitsStore.updateHabit(
                         id: habit.id,
                         name: trimmedName,
@@ -267,53 +270,63 @@ private struct AddHabitSheetView: View {
         return true
     }
 
+    private var limitReachedText: String {
+        String(
+            format: NSLocalizedString(
+                "sheet.addHabit.limitReached.fmt",
+                comment: "Shown when the user reaches the max number of habits. Uses one %d placeholder."
+            ),
+            HabitsStore.maxHabits
+        )
+    }
+
     var body: some View {
         NavigationStack {
             Form {
-                Section("Habit emoji") {
-                    TextField("example: 📖", text: $emoji)
+                Section(NSLocalizedString("sheet.addHabit.section.emoji.title", comment: "Add habit section title: emoji")) {
+                    TextField(NSLocalizedString("sheet.addHabit.section.emoji.placeholder", comment: "Add habit emoji placeholder"), text: $emoji)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 }
 
-                Section("Habit name") {
-                    TextField("example: Read", text: $name)
+                Section(NSLocalizedString("sheet.addHabit.section.name.title", comment: "Add habit section title: name")) {
+                    TextField(NSLocalizedString("sheet.addHabit.section.name.placeholder", comment: "Add habit name placeholder"), text: $name)
                         .textInputAutocapitalization(.words)
                 }
 
-                Section("Habit measure") {
-                    TextField("example: pages", text: $unit)
+                Section(NSLocalizedString("sheet.addHabit.section.unit.title", comment: "Add habit section title: measure")) {
+                    TextField(NSLocalizedString("sheet.addHabit.section.unit.placeholder", comment: "Add habit measure placeholder"), text: $unit)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 }
 
-                Section("Measure target") {
-                    TextField("example: 20", text: $goalText)
+                Section(NSLocalizedString("sheet.addHabit.section.goal.title", comment: "Add habit section title: target")) {
+                    TextField(NSLocalizedString("sheet.addHabit.section.goal.placeholder", comment: "Add habit target placeholder"), text: $goalText)
                         .keyboardType(.numberPad)
                 }
 
-                Section("Log step") {
-                    TextField("example: 2", text: $stepText)
+                Section(NSLocalizedString("sheet.addHabit.section.step.title", comment: "Add habit section title: log step")) {
+                    TextField(NSLocalizedString("sheet.addHabit.section.step.placeholder", comment: "Add habit log step placeholder"), text: $stepText)
                         .keyboardType(.numberPad)
                 }
 
                 if !canAddMore {
-                    Text("Limit reached (max \(HabitsStore.maxHabits) habits).")
+                    Text(limitReachedText)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
             }
-            .navigationTitle("Add Habit")
+            .navigationTitle(NSLocalizedString("sheet.addHabit.title", comment: "Add Habit navigation title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(NSLocalizedString("action.cancel", comment: "Cancel button title")) {
                         dismiss()
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button(NSLocalizedString("action.save", comment: "Save button title")) {
                         let created = habitsStore.addHabit(
                             name: trimmedName,
                             emoji: trimmedEmoji,
