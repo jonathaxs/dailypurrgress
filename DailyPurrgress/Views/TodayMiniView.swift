@@ -99,11 +99,12 @@ private extension TodayMiniView {
                     Button(NSLocalizedString("action.editHabits", comment: "")) {
                         isPresentingEditHabit = true
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
+                    .tint(.green)
                 }
                 .frame(maxWidth: 330)
                 .frame(maxWidth: .infinity, alignment: .center)
-                .controlSize(.regular)
+                .controlSize(.large)
                 .confirmationDialog(
                     NSLocalizedString("confirm.resetAll.title", comment: ""),
                     isPresented: $isConfirmingResetAll,
