@@ -7,7 +7,6 @@ struct TodayMiniView: View {
 
     @State private var isPresentingEditHabit: Bool = false
     @State private var isConfirmingResetAll: Bool = false
-
     @State private var hapticTrigger: Int = 0
 
     private var overallProgress: Double {
@@ -88,44 +87,43 @@ private extension TodayMiniView {
                 }
 
                 Spacer()
-                    .frame(height: 15)
+                    .frame(height: 14)
 
                 HStack(spacing: 12) {
-                    Button("Reset All") {
+                    Button(NSLocalizedString("action.resetAll", comment: "")) {
                         isConfirmingResetAll = true
                     }
                     .buttonStyle(.bordered)
                     .tint(.red)
 
-                    Button("Edit Habits") {
+                    Button(NSLocalizedString("action.editHabits", comment: "")) {
                         isPresentingEditHabit = true
                     }
-                    .buttonStyle(.bordered)
-                    .tint(.green)
+                    .buttonStyle(.borderedProminent)
                 }
                 .frame(maxWidth: 330)
                 .frame(maxWidth: .infinity, alignment: .center)
-                .controlSize(.large)
+                .controlSize(.regular)
                 .confirmationDialog(
-                    "Reset all habits?",
+                    NSLocalizedString("confirm.resetAll.title", comment: ""),
                     isPresented: $isConfirmingResetAll,
                     titleVisibility: .visible
                 ) {
-                    Button("Reset All", role: .destructive) {
+                    Button(NSLocalizedString("action.resetAll", comment: ""), role: .destructive) {
                         withAnimation(.easeInOut(duration: 0.2)) {
                             habitsStore.resetAll()
                         }
                     }
-                    Button("Cancel", role: .cancel) {}
+                    Button(NSLocalizedString("action.cancel", comment: ""), role: .cancel) {}
                 } message: {
-                    Text("This will reset the progress for all habits.")
+                    Text(NSLocalizedString("confirm.resetAll.message", comment: ""))
                 }
             }
         }
     }
 
     var openingCopy: some View {
-        Text(Copy.opening)
+        Text(NSLocalizedString("opening.text", comment: ""))
             .font(.headline)
             .multilineTextAlignment(.center)
     }
