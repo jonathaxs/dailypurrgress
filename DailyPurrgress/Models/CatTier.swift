@@ -15,13 +15,13 @@ enum CatTier: Int, CaseIterable, Identifiable {
     var emoji: String {
         switch self {
         case .low:
-            return "🐱"
+            return NSLocalizedString("tier.low.emoji", comment: "")
         case .medium:
-            return "😺"
+            return NSLocalizedString("tier.medium.emoji", comment: "")
         case .high:
-            return "🐈"
+            return NSLocalizedString("tier.high.emoji", comment: "")
         case .complete:
-            return "🐆"
+            return NSLocalizedString("tier.complete.emoji", comment: "")
         }
     }
 
@@ -30,26 +30,26 @@ enum CatTier: Int, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .low:
-            return "It’s okay to start small."
+            return NSLocalizedString("tier.low.title", comment: "")
         case .medium:
-            return "Nice and steady."
+            return NSLocalizedString("tier.medium.title", comment: "")
         case .high:
-            return "This feels good."
+            return NSLocalizedString("tier.high.title", comment: "")
         case .complete:
-            return "Well done."
+            return NSLocalizedString("tier.complete.title", comment: "")
         }
     }
 
     var subtitle: String {
         switch self {
         case .low:
-            return "Every habit begins somewhere."
+            return NSLocalizedString("tier.low.subtitle", comment: "")
         case .medium:
-            return "You’re taking care of yourself."
+            return NSLocalizedString("tier.medium.subtitle", comment: "")
         case .high:
-            return "Consistency is quietly building."
+            return NSLocalizedString("tier.high.subtitle", comment: "")
         case .complete:
-            return "Small habits add up."
+            return NSLocalizedString("tier.complete.subtitle", comment: "")
         }
     }
 
