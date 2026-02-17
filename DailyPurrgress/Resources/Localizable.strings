@@ -1,93 +1,97 @@
 /*  Localizable.strings (english) ⌘ @jonathaxs */
 
 /* Opening */
-"opening_text" = "Daily habits don’t have to be loud.\nSometimes, they just purr.";
+"opening.text" = "Daily habits don’t have to be loud.\nSometimes, they just purr.";
 
 /* Actions */
-"action_reset" = "Reset";
-"action_reset_all" = "Reset All";
-"action_cancel" = "Cancel";
-"action_back" = "Back";
-"action_done" = "Done";
-"action_delete" = "Delete";
-"action_add" = "Add";
-"action_save" = "Save";
-"action_edit_habits" = "Edit Habits";
+"action.reset" = "Reset";
+"action.resetAll" = "Reset all";
+"action.cancel" = "Cancel";
+"action.back" = "Back";
+"action.done" = "Done";
+"action.delete" = "Delete";
+"action.add" = "Add";
+"action.save" = "Save";
+"action.editHabits" = "Edit habits";
 
 /* Status */
-"goal_reached" = "Goal reached for today.";
+"status.goalReached" = "Goal reached.";
 
 /* Habit progress strings */
-"remaining_fmt" = "%d %@ to go";
-"progress_line_fmt" = "%d / %d %@";
-"log_step_fmt" = "Log +%d %@";
+"habit.remaining.fmt" = "%d %@ to go";
+"habit.progressLine.fmt" = "%d / %d %@";
+"habit.logStep.fmt" = "Log +%d %@";
 
 /* Confirmation dialogs */
-"reset_confirm_title_fmt" = "Reset %@?";
-"reset_confirm_message_fmt" = "This will clear your %@ progress for today.";
+"confirm.reset.title.fmt" = "Reset %@ progress?";
+"confirm.reset.message.fmt" = "This will clear your %@ progress for today.";
 
-"reset_all_confirm_title" = "Reset all habits?";
-"reset_all_confirm_message" = "This will reset the progress for all habits.";
+"confirm.resetAll.title" = "Reset all habits?";
+"confirm.resetAll.message" = "This will reset the progress for all habits.";
 
 /* Accessibility - Progress ring */
-"a11y_progress_label" = "Daily progress";
-"a11y_progress_hint" = "Shows your progress toward the daily goal";
-"a11y_percent_completed_fmt" = "%d percent completed";
+"a11y.progress.label" = "Daily progress";
+"a11y.progress.hint" = "Shows your progress toward the daily goal";
+"a11y.progress.percentCompleted.fmt" = "%d percent completed";
 
 /* Accessibility - Remaining */
-"a11y_remaining_label" = "Remaining";
-"a11y_remaining_hint" = "Left to reach your daily goal";
+"a11y.remaining.label" = "Remaining";
+"a11y.remaining.hint" = "Left to reach your daily goal";
 
 /* Accessibility - Units */
-"a11y_unit_value_fmt" = "%d %@";
+"a11y.unitValue.fmt" = "%d %@";
 
 /* Accessibility - Log */
-"a11y_log_label_fmt" = "Log %@";
-"a11y_log_hint_fmt" = "Adds progress to your %@ goal";
+"a11y.log.label.fmt" = "Log %@";
+"a11y.log.hint.fmt" = "Adds progress to your %@ goal";
 
 /* Accessibility - Reset */
-"a11y_reset_today_label" = "Reset today";
-"a11y_reset_today_hint" = "Clears your progress for today";
+"a11y.resetToday.label" = "Reset today";
+"a11y.resetToday.hint" = "Clears your progress for today";
 
 /* Cat tiers */
-"tier_low_title" = "It’s okay to start small.";
-"tier_medium_title" = "Nice and steady.";
-"tier_high_title" = "This feels good.";
-"tier_complete_title" = "Well done.";
+"tier.low.emoji" = "🐱";
+"tier.medium.emoji" = "😸";
+"tier.high.emoji" = "🐈";
+"tier.complete.emoji" = "🐆";
+"tier.low.title" = "It’s okay to start small.";
+"tier.medium.title" = "Nice and steady.";
+"tier.high.title" = "This feels good.";
+"tier.complete.title" = "Well done.";
 
-"tier_low_subtitle" = "Every habit begins somewhere.";
-"tier_medium_subtitle" = "You’re taking care of yourself.";
-"tier_high_subtitle" = "Consistency is quietly building.";
-"tier_complete_subtitle" = "Small habits add up.";
+"tier.low.subtitle" = "Every habit begins somewhere.";
+"tier.medium.subtitle" = "You’re taking care of yourself.";
+"tier.high.subtitle" = "Consistency is quietly building.";
+"tier.complete.subtitle" = "Small habits add up.";
 
 /* Edit Habits sheet */
-"edit_habits_title" = "Edit Habits";
-"edit_habits_section_title" = "Your Habits";
-"edit_habits_footer_water_protected" = "Water is your default habit and can’t be deleted.";
+"sheet.editHabits.title" = "Edit habits";
+"sheet.editHabits.section.title" = "Your habits";
+"sheet.editHabits.footer.waterProtected" = "Water is your default habit and can’t be deleted.";
 
 /* Add Habit sheet */
-"add_habit_title" = "Add Habit";
+"sheet.addHabit.title" = "Add habit";
 
-"add_section_emoji_title" = "Habit emoji";
-"add_section_emoji_placeholder" = "example: 📖";
+"sheet.addHabit.section.emoji.title" = "Habit emoji";
+"sheet.addHabit.section.emoji.placeholder" = "example: 📘";
 
-"add_section_name_title" = "Habit name";
-"add_section_name_placeholder" = "example: Read";
+"sheet.addHabit.section.name.title" = "Habit name";
+"sheet.addHabit.section.name.placeholder" = "example: Read";
 
-"add_section_unit_title" = "Habit measure";
-"add_section_unit_placeholder" = "example: pages";
+"sheet.addHabit.section.unit.title" = "Habit measure";
+"sheet.addHabit.section.unit.placeholder" = "example: pages";
 
-"add_section_goal_title" = "Measure target";
-"add_section_goal_placeholder" = "example: 20";
+"sheet.addHabit.section.goal.title" = "Measure target";
+"sheet.addHabit.section.goal.placeholder" = "example: 20";
 
-"add_section_step_title" = "Log step";
-"add_section_step_placeholder" = "example: 2";
+"sheet.addHabit.section.step.title" = "Log step";
+"sheet.addHabit.section.step.placeholder" = "example: 2";
 
-"add_limit_reached_fmt" = "Limit reached (max %d habits).";
+"sheet.addHabit.limitReached.fmt" = "Limit reached (max %d habits).";
 
 /* Edit Habit detail */
-"detail_field_emoji" = "Emoji";
-"detail_field_name" = "Name";
-"detail_field_measure" = "Measure";
-"detail_field_target" = "Target";
-"detail_field_log_step" = "Log step";
+"sheet.editHabit.field.emoji" = "Emoji";
+"sheet.editHabit.field.name" = "Name";
+"sheet.editHabit.field.measure" = "Measure";
+"sheet.editHabit.field.target" = "Target";
+"sheet.editHabit.field.logStep" = "Log step";
