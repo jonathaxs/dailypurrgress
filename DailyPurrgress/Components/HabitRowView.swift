@@ -9,8 +9,15 @@ struct HabitRowView: View {
     let onSetCurrent: (Int) -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
     @State private var isConfirmingReset: Bool = false
+
+    private func t(_ key: String) -> String {
+        NSLocalizedString(key, comment: "")
+    }
+
+    private func tf(_ key: String, _ args: CVarArg...) -> String {
+        String(format: t(key), arguments: args)
+    }
 
     init(
         habit: Habit,
@@ -27,9 +34,7 @@ struct HabitRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             header
-
             slider
-
             actions
         }
         .padding(14)
@@ -45,22 +50,20 @@ struct HabitRowView: View {
 
 private extension HabitRowView {
     var header: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(habit.emoji)
-                    .font(.headline)
-                    .accessibilityHidden(true)
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text(habit.emoji)
+                .font(.headline)
+                .accessibilityHidden(true)
 
-                Text(habit.name)
-                    .font(.headline)
+            Text(habit.name)
+                .font(.headline)
 
-                Spacer(minLength: 10)
+            Spacer(minLength: 10)
 
-                Text(progressLine)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .monospacedDigit()
-            }
+            Text(progressLine)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .monospacedDigit()
         }
     }
 
@@ -89,9 +92,9 @@ private extension HabitRowView {
             step: step
         )
         .disabled(maxGoal == 0)
-        .accessibilityLabel("Adjust progress")
+        .accessibilityLabel(t("a11y.remaining.label"))
         .accessibilityValue(sliderAccessibilityValue)
-        .accessibilityHint("Swipe up or down to change")
+        .accessibilityHint(t("a11y.remaining.hint"))
     }
 
     var actions: some View {
@@ -99,53 +102,53 @@ private extension HabitRowView {
             Button {
                 isConfirmingReset = true
             } label: {
-                Text(Copy.reset)
+                Text(t("action.reset"))
                     .frame(maxWidth: .infinity, minHeight: 25)
             }
             .confirmationDialog(
-                Copy.resetConfirmationTitle(for:"\(habit.emoji)\(habit.name)"),
+                tf("confirm.reset.title.fmt", "\(habit.emoji) \(habit.name)"),
                 isPresented: $isConfirmingReset,
                 titleVisibility: .visible
             ) {
-                Button(Copy.reset, role: .destructive) {
+                Button(t("action.reset"), role: .destructive) {
                     onReset()
                 }
 
-                Button(Copy.cancel, role: .cancel) {}
+                Button(t("action.cancel"), role: .cancel) {}
             } message: {
-                Text(Copy.resetConfirmationMessage(for: habit.name))
+                Text(tf("confirm.reset.message.fmt", habit.name))
             }
             .buttonStyle(.bordered)
             .disabled(habit.current == 0)
-            .accessibilityLabel(Copy.resetTodayAccessibilityLabel)
-            .accessibilityHint(Copy.resetTodayAccessibilityHint)
+            .accessibilityLabel(t("a11y.resetToday.label"))
+            .accessibilityHint(t("a11y.resetToday.hint"))
 
             Button {
                 guard habit.isComplete == false else { return }
                 onLogStep()
             } label: {
-                Text(Copy.logStep(habit.step, unit: habit.unit))
+                Text(tf("habit.logStep.fmt", habit.step, habit.unit))
                     .frame(maxWidth: .infinity, minHeight: 25)
             }
             .buttonStyle(.borderedProminent)
             .disabled(habit.isComplete)
             .opacity(habit.isComplete ? 0.6 : 1.0)
-            .accessibilityLabel(Copy.logAccessibilityLabel(for: habit.name))
-            .accessibilityHint(Copy.logAccessibilityHint(for: habit.name))
-            .accessibilityValue(Copy.unitValue(habit.step, unit: habit.unit))
+            .accessibilityLabel(tf("a11y.log.label.fmt", habit.name))
+            .accessibilityHint(tf("a11y.log.hint.fmt", habit.name))
+            .accessibilityValue(tf("a11y.unitValue.fmt", habit.step, habit.unit))
         }
     }
 
     var progressLine: String {
-        "\(habit.current) / \(habit.goal) \(habit.unit)"
+        tf("habit.progressLine.fmt", habit.current, habit.goal, habit.unit)
     }
 
     var progressAccessibilityValue: String {
-        Copy.percentCompletedValue(Int((habit.progress * 100).rounded()))
+        tf("a11y.progress.percentCompleted.fmt", Int((habit.progress * 100).rounded()))
     }
 
     var sliderAccessibilityValue: String {
-        "\(habit.current) \(habit.unit)"
+        tf("a11y.unitValue.fmt", habit.current, habit.unit)
     }
 }
 
