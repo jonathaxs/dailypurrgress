@@ -49,13 +49,14 @@ struct ProgressRingView: View {
                     .monospacedDigit()
                     .contentTransition(.numericText())
                     .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: clampedProgress)
+                    .accessibilityHidden(true)
             }
         }
         .frame(width: size, height: size)
         .accessibilityElement()
-        .accessibilityLabel(Copy.progressAccessibilityLabel)
-        .accessibilityHint(Copy.progressAccessibilityHint)
-        .accessibilityValue(Copy.percentCompletedValue(Int(clampedProgress * 100)))
+        .accessibilityLabel(Text("a11y.progress.label"))
+        .accessibilityHint(Text("a11y.progress.hint"))
+        .accessibilityValue(Text(String(format: NSLocalizedString("a11y.progress.percentCompleted.fmt", comment: ""), Int(clampedProgress * 100))))
     }
 }
 
