@@ -111,13 +111,13 @@ extension Habit {
         )
     }
 
-    static func proteinDefault() -> Habit {
+    static func readDefault() -> Habit {
         Habit(
-            name: "Protein",
-            emoji: "🥩",
-            unit: "g",
-            goal: 140,
-            step: 20,
+            name: "Read",
+            emoji: "📘",
+            unit: "pages",
+            goal: 20,
+            step: 2,
             current: 0,
             isProtected: false
         )
