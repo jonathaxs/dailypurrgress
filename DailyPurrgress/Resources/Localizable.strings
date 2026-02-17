@@ -73,19 +73,19 @@
 "sheet.addHabit.title" = "Add habit";
 
 "sheet.addHabit.section.emoji.title" = "Habit emoji";
-"sheet.addHabit.section.emoji.placeholder" = "example: 📘";
+"sheet.addHabit.section.emoji.placeholder" = "example: 🥩";
 
 "sheet.addHabit.section.name.title" = "Habit name";
-"sheet.addHabit.section.name.placeholder" = "example: Read";
+"sheet.addHabit.section.name.placeholder" = "example: Protein";
 
 "sheet.addHabit.section.unit.title" = "Habit measure";
-"sheet.addHabit.section.unit.placeholder" = "example: pages";
+"sheet.addHabit.section.unit.placeholder" = "example: g";
 
 "sheet.addHabit.section.goal.title" = "Measure target";
-"sheet.addHabit.section.goal.placeholder" = "example: 20";
+"sheet.addHabit.section.goal.placeholder" = "example: 140";
 
 "sheet.addHabit.section.step.title" = "Log step";
-"sheet.addHabit.section.step.placeholder" = "example: 2";
+"sheet.addHabit.section.step.placeholder" = "example: 20";
 
 "sheet.addHabit.limitReached.fmt" = "Limit reached (max %d habits).";
 
