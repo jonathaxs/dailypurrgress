@@ -54,9 +54,19 @@ struct ProgressRingView: View {
         }
         .frame(width: size, height: size)
         .accessibilityElement()
-        .accessibilityLabel(Text("a11y.progress.label"))
-        .accessibilityHint(Text("a11y.progress.hint"))
-        .accessibilityValue(Text(String(format: NSLocalizedString("a11y.progress.percentCompleted.fmt", comment: ""), Int(clampedProgress * 100))))
+        .accessibilityLabel(Text(NSLocalizedString("a11y.progress.label", comment: "Accessibility label for overall daily progress ring")))
+        .accessibilityHint(Text(NSLocalizedString("a11y.progress.hint", comment: "Accessibility hint describing the progress ring")))
+        .accessibilityValue(
+            Text(
+                String(
+                    format: NSLocalizedString(
+                        "a11y.progress.percentCompleted.fmt",
+                        comment: "Accessibility value describing percent completed"
+                    ),
+                    Int(clampedProgress * 100)
+                )
+            )
+        )
     }
 }
 
