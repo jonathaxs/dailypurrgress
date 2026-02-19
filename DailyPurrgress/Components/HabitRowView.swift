@@ -38,8 +38,21 @@ struct HabitRowView: View {
             actions
         }
         .padding(14)
-        .background(.thinMaterial)
+        .background {
+            ZStack {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(.thinMaterial)
+
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(progressTint)
+                    .opacity(backgroundWashOpacity)
+            }
+        }
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(progressTint.opacity(0.25), lineWidth: 1)
+        }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(habit.name)
         .accessibilityValue(progressAccessibilityValue)
@@ -149,6 +162,37 @@ private extension HabitRowView {
 
     var sliderAccessibilityValue: String {
         tf("a11y.unitValue.fmt", habit.current, habit.unit)
+    }
+    
+    var clampedProgress: Double {
+        min(max(habit.progress, 0), 1)
+    }
+
+    var progressTint: Color {
+        switch clampedProgress {
+        case ..<0.30:
+            return .red
+        case ..<0.60:
+            return .orange
+        case ..<1.0:
+            return .green
+        default:
+            return .blue
+        }
+    }
+
+    var backgroundWashOpacity: Double {
+        // subtle Apple-like wash
+        switch clampedProgress {
+        case ..<0.30:
+            return 0.08
+        case ..<0.60:
+            return 0.10
+        case ..<1.0:
+            return 0.12
+        default:
+            return 0.16
+        }
     }
 }
 
