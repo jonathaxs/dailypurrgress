@@ -553,6 +553,7 @@
       }
     },
     "tier.complete.emoji" : {
+      "comment" : "Jaguar emoji complete tier",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -583,6 +584,7 @@
       }
     },
     "tier.high.emoji" : {
+      "comment" : "Cat emoji high tier",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -613,7 +615,7 @@
       }
     },
     "tier.low.emoji" : {
-      "comment" : "Cat tiers",
+      "comment" : "Small cat emoji low tier",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -644,6 +646,7 @@
       }
     },
     "tier.medium.emoji" : {
+      "comment" : "Happy cat emoji medium tier",
       "localizations" : {
         "en" : {
           "stringUnit" : {
