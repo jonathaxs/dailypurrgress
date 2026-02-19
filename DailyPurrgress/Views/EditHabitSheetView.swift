@@ -44,6 +44,7 @@ struct EditHabitSheetView: View {
                     Button(NSLocalizedString("action.back", comment: "Back button title")) {
                         dismiss()
                     }
+                    .tint(.primary)
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -52,6 +53,7 @@ struct EditHabitSheetView: View {
                             isPresentingAddHabit = true
                         }
                         .disabled(!canAddMore)
+                        .tint(.blue)
 
                         Button(editMode.isEditing
                                ? NSLocalizedString("action.done", comment: "Done button title")
@@ -60,6 +62,7 @@ struct EditHabitSheetView: View {
                                 editMode = editMode.isEditing ? .inactive : .active
                             }
                         }
+                        .foregroundStyle(editMode.isEditing ? .green : .red)
                     }
                 }
             }
@@ -222,6 +225,7 @@ private struct EditHabitDetailView: View {
                     }
                 }
                 .disabled(!canSave)
+                .tint(.blue)
             }
         }
     }
@@ -340,6 +344,7 @@ private struct AddHabitSheetView: View {
                         }
                     }
                     .disabled(!isValid)
+                    .tint(.blue)
                 }
             }
         }
