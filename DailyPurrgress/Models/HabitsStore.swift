@@ -2,6 +2,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 final class HabitsStore: ObservableObject {
     // MARK: - Limits
@@ -114,6 +115,15 @@ final class HabitsStore: ObservableObject {
 
         habits.remove(at: index)
         ensureDefaultHabitsExist()
+        saveNow()
+    }
+
+    /// Reorders habits inside the array and persists the new order.
+    func moveHabits(from offsets: IndexSet, to destination: Int) {
+        var updated = habits
+        updated.move(fromOffsets: offsets, toOffset: destination)
+        habits = updated
+
         saveNow()
     }
 
