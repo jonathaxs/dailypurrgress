@@ -3,17 +3,22 @@
 import SwiftUI
 
 struct EditHabitDetailView: View {
+    // MARK: - Input
     let habit: Habit
 
+    // MARK: - Environment
     @EnvironmentObject private var habitsStore: HabitsStore
     @Environment(\.dismiss) private var dismiss
 
+    // MARK: - Draft Fields
+    // I keep draft state so the user can cancel without changing the stored habit.
     @State private var emoji: String
     @State private var name: String
     @State private var unit: String
     @State private var goalText: String
     @State private var stepText: String
 
+    // MARK: - Init
     init(habit: Habit) {
         self.habit = habit
         _emoji = State(initialValue: habit.emoji)
@@ -23,6 +28,7 @@ struct EditHabitDetailView: View {
         _stepText = State(initialValue: String(habit.step))
     }
 
+    // MARK: - Validation Helpers
     private var trimmedEmoji: String {
         emoji.trimmingCharacters(in: .whitespacesAndNewlines).prefix(1).description
     }
@@ -60,6 +66,7 @@ struct EditHabitDetailView: View {
         return stepValue <= goalValue
     }
 
+    // MARK: - View
     var body: some View {
         Form {
             Section {

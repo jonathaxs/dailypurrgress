@@ -3,12 +3,16 @@
 import SwiftUI
 
 struct TodayMiniView: View {
+    // MARK: - Dependencies
     @EnvironmentObject private var habitsStore: HabitsStore
 
+    // MARK: - UI State
     @State private var isPresentingEditHabit: Bool = false
     @State private var isConfirmingResetAll: Bool = false
+    // Increment to trigger a subtle haptic on log actions.
     @State private var hapticTrigger: Int = 0
 
+    // MARK: - Derived State
     private var overallProgress: Double {
         let valid = habitsStore.habits.filter { $0.goal > 0 }
         guard valid.isEmpty == false else { return 0 }
@@ -66,6 +70,7 @@ private extension TodayMiniView {
                     HabitRowView(
                         habit: habit,
                         onLogStep: {
+                            // Haptic tick + animated progress update.
                             hapticTrigger += 1
                             withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
                                 habitsStore.logStep(for: habit.id)
@@ -111,6 +116,7 @@ private extension TodayMiniView {
                     titleVisibility: .visible
                 ) {
                     Button(NSLocalizedString("common.action.resetAll", comment: ""), role: .destructive) {
+                        // Clear all habits' progress for today.
                         withAnimation(.easeInOut(duration: 0.2)) {
                             habitsStore.resetAll()
                         }

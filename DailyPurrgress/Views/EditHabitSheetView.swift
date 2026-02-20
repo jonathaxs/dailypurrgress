@@ -3,15 +3,24 @@
 import SwiftUI
 
 struct EditHabitSheetView: View {
+
+    // MARK: - Dependencies
+
     @EnvironmentObject private var habitsStore: HabitsStore
     @Environment(\.dismiss) private var dismiss
+
+    // MARK: - UI State
 
     @State private var editMode: EditMode = .inactive
     @State private var isPresentingAddHabit: Bool = false
 
+    // MARK: - Derived State
+
     private var canAddMore: Bool {
         habitsStore.habits.count < HabitsStore.maxHabits
     }
+
+    // MARK: - View
 
     var body: some View {
         NavigationStack {
@@ -44,7 +53,7 @@ struct EditHabitSheetView: View {
                     Button(NSLocalizedString("common.action.back", comment: "Back button title")) {
                         dismiss()
                     }
-                    .tint(.primary) // black in light, white in dark (system default)
+                    .tint(.primary) // system default: adapts to light/dark for iOS 17
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -64,6 +73,7 @@ struct EditHabitSheetView: View {
                                 editMode = editMode.isEditing ? .inactive : .active
                             }
                         }
+                        // Visual cue: Done (green) vs Delete (red)
                         .foregroundStyle(editMode.isEditing ? .green : .red)
                     }
                 }

@@ -3,14 +3,20 @@
 import SwiftUI
 
 struct AddHabitSheetView: View {
+    // MARK: - Environment
     @EnvironmentObject private var habitsStore: HabitsStore
     @Environment(\.dismiss) private var dismiss
+
+    // MARK: - Draft Fields
+    // Using local draft state keeps edits isolated until the user taps Save.
 
     @State private var name: String = ""
     @State private var unit: String = ""
     @State private var goalText: String = ""
     @State private var stepText: String = ""
     @State private var emoji: String = ""
+
+    // MARK: - Validation Helpers
 
     private var canAddMore: Bool {
         habitsStore.habits.count < HabitsStore.maxHabits
@@ -55,6 +61,7 @@ struct AddHabitSheetView: View {
         )
     }
 
+    // MARK: - View
     var body: some View {
         NavigationStack {
             Form {
