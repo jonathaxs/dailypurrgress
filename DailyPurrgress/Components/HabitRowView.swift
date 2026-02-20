@@ -142,7 +142,9 @@ private extension HabitRowView {
                 guard habit.isComplete == false else { return }
                 onLogStep()
             } label: {
-                Text(tf("habit.logStep.fmt", habit.step, habit.unit))
+                Text("Log")
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
                     .frame(maxWidth: .infinity, minHeight: 25)
             }
             .buttonStyle(.borderedProminent)
