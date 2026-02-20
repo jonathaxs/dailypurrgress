@@ -1,4 +1,6 @@
-// EditHabitSheetView.swift ⌘ @jonathaxs
+// EditHabitSheetView.swift ⌘
+//  Created by @jonathaxs.
+//  Swift Student Challenge 2026
 
 import SwiftUI
 

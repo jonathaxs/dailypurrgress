@@ -53,6 +53,7 @@ struct HabitRowView: View {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .stroke(progressTint.opacity(0.25), lineWidth: 1)
         }
+        // Expose a summary value while keeping inner controls accessible to VoiceOver.
         .accessibilityElement(children: .contain)
         .accessibilityLabel(habit.name)
         .accessibilityValue(progressAccessibilityValue)
@@ -84,6 +85,7 @@ private extension HabitRowView {
         let maxGoal = Double(max(habit.goal, 0))
         let step = Double(max(habit.step, 1))
 
+        // Slider outputs Double; snap to habit.step and clamp within [0, goal].
         let binding = Binding<Double>(
             get: { Double(habit.current) },
             set: { newValue in
@@ -168,6 +170,7 @@ private extension HabitRowView {
         min(max(habit.progress, 0), 1)
     }
 
+    // Progress color tiers: <30% red, <60% orange, <100% green, 100%+ blue.
     var progressTint: Color {
         switch clampedProgress {
         case ..<0.30:
@@ -182,7 +185,6 @@ private extension HabitRowView {
     }
 
     var backgroundWashOpacity: Double {
-        // subtle Apple-like wash
         switch clampedProgress {
         case ..<0.30:
             return 0.08
