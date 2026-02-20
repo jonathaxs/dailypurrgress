@@ -38,6 +38,7 @@ struct EditHabitSheetView: View {
                         .deleteDisabled(habit.isProtected)
                     }
                     .onDelete(perform: delete)
+                    .onMove(perform: move)
                 } header: {
                     Text(NSLocalizedString("editHabitsSheet.section.title", comment: "Header title for habits list section"))
                 } footer: {
@@ -48,7 +49,6 @@ struct EditHabitSheetView: View {
                 }
             }
             .environment(\.editMode, $editMode)
-            .navigationTitle(NSLocalizedString("editHabitsSheet.title", comment: "Edit habits sheet navigation title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -69,14 +69,14 @@ struct EditHabitSheetView: View {
                         Button(
                             editMode.isEditing
                             ? NSLocalizedString("common.action.done", comment: "Done button title")
-                            : NSLocalizedString("common.action.delete", comment: "Enter delete mode button title")
+                            : NSLocalizedString("common.action.edit", comment: "Edit button title")
                         ) {
                             withAnimation(.easeInOut(duration: 0.15)) {
                                 editMode = editMode.isEditing ? .inactive : .active
                             }
                         }
-                        // Visual cue: Done (green) vs Delete (red)
-                        .foregroundStyle(editMode.isEditing ? .green : .red)
+                        // Visual cue: Done (blue) vs Edit (green)
+                        .foregroundStyle(editMode.isEditing ? .blue : .green)
                     }
                 }
             }
@@ -103,6 +103,14 @@ private extension EditHabitSheetView {
     }
 }
 
+// MARK: - Move
+
+private extension EditHabitSheetView {
+    func move(from source: IndexSet, to destination: Int) {
+        habitsStore.moveHabits(from: source, to: destination)
+    }
+}
+
 // MARK: - Row
 
 private extension EditHabitSheetView {
@@ -123,6 +131,10 @@ private extension EditHabitSheetView {
             }
 
             Spacer()
+
+            Text(NSLocalizedString("editHabitsSheet.row.editValues", comment: "Hint text shown on habit rows to indicate tapping opens the edit screen"))
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
         .padding(.vertical, 4)
     }
