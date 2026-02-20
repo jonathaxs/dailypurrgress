@@ -65,40 +65,40 @@ struct EditHabitDetailView: View {
             Section {
                 TextField("", text: $emoji)
             } header: {
-                Text(NSLocalizedString("sheet.editHabit.field.emoji", comment: "Edit habit field label: Emoji"))
+                Text(NSLocalizedString("editHabitDetail.field.emoji", comment: "Edit habit field label: Emoji"))
             }
 
             Section {
                 TextField("", text: $name)
             } header: {
-                Text(NSLocalizedString("sheet.editHabit.field.name", comment: "Edit habit field label: Name"))
+                Text(NSLocalizedString("editHabitDetail.field.name", comment: "Edit habit field label: Name"))
             }
 
             Section {
                 TextField("", text: $unit)
             } header: {
-                Text(NSLocalizedString("sheet.editHabit.field.measure", comment: "Edit habit field label: Measure"))
+                Text(NSLocalizedString("editHabitDetail.field.measure", comment: "Edit habit field label: Measure"))
             }
 
             Section {
                 TextField("", text: $goalText)
                     .keyboardType(.numberPad)
             } header: {
-                Text(NSLocalizedString("sheet.editHabit.field.target", comment: "Edit habit field label: Target"))
+                Text(NSLocalizedString("editHabitDetail.field.target", comment: "Edit habit field label: Target"))
             }
 
             Section {
                 TextField("", text: $stepText)
                     .keyboardType(.numberPad)
             } header: {
-                Text(NSLocalizedString("sheet.editHabit.field.logStep", comment: "Edit habit field label: Log step"))
+                Text(NSLocalizedString("editHabitDetail.field.logStep", comment: "Edit habit field label: Log step"))
             }
         }
         .navigationTitle(habit.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(NSLocalizedString("action.save", comment: "Save button title")) {
+                Button(NSLocalizedString("common.action.save", comment: "Save button title")) {
                     let didUpdate = habitsStore.updateHabit(
                         id: habit.id,
                         name: trimmedName,

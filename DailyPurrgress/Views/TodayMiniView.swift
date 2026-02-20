@@ -90,13 +90,13 @@ private extension TodayMiniView {
                     .frame(height: 14)
 
                 HStack(spacing: 12) {
-                    Button(NSLocalizedString("action.resetAll", comment: "")) {
+                    Button(NSLocalizedString("common.action.resetAll", comment: "")) {
                         isConfirmingResetAll = true
                     }
                     .buttonStyle(.bordered)
                     .tint(.red)
 
-                    Button(NSLocalizedString("action.editHabits", comment: "")) {
+                    Button(NSLocalizedString("common.action.editHabits", comment: "")) {
                         isPresentingEditHabit = true
                     }
                     .buttonStyle(.bordered)
@@ -106,25 +106,25 @@ private extension TodayMiniView {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .controlSize(.large)
                 .confirmationDialog(
-                    NSLocalizedString("confirm.resetAll.title", comment: ""),
+                    NSLocalizedString("common.confirm.resetAll.title", comment: ""),
                     isPresented: $isConfirmingResetAll,
                     titleVisibility: .visible
                 ) {
-                    Button(NSLocalizedString("action.resetAll", comment: ""), role: .destructive) {
+                    Button(NSLocalizedString("common.action.resetAll", comment: ""), role: .destructive) {
                         withAnimation(.easeInOut(duration: 0.2)) {
                             habitsStore.resetAll()
                         }
                     }
-                    Button(NSLocalizedString("action.cancel", comment: ""), role: .cancel) {}
+                    Button(NSLocalizedString("common.action.cancel", comment: ""), role: .cancel) {}
                 } message: {
-                    Text(NSLocalizedString("confirm.resetAll.message", comment: ""))
+                    Text(NSLocalizedString("common.confirm.resetAll.message", comment: ""))
                 }
             }
         }
     }
 
     var openingCopy: some View {
-        Text(NSLocalizedString("opening.text", comment: ""))
+        Text(NSLocalizedString("todayMini.opening.text", comment: ""))
             .font(.headline)
             .multilineTextAlignment(.center)
     }

@@ -15,13 +15,13 @@ enum CatTier: Int, CaseIterable, Identifiable {
     var emoji: String {
         switch self {
         case .low:
-            return NSLocalizedString("tier.low.emoji", comment: "")
+            return NSLocalizedString("catTier.low.emoji", comment: "")
         case .medium:
-            return NSLocalizedString("tier.medium.emoji", comment: "")
+            return NSLocalizedString("catTier.medium.emoji", comment: "")
         case .high:
-            return NSLocalizedString("tier.high.emoji", comment: "")
+            return NSLocalizedString("catTier.high.emoji", comment: "")
         case .complete:
-            return NSLocalizedString("tier.complete.emoji", comment: "")
+            return NSLocalizedString("catTier.complete.emoji", comment: "")
         }
     }
 
@@ -30,26 +30,26 @@ enum CatTier: Int, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .low:
-            return NSLocalizedString("tier.low.title", comment: "")
+            return NSLocalizedString("catTier.low.title", comment: "")
         case .medium:
-            return NSLocalizedString("tier.medium.title", comment: "")
+            return NSLocalizedString("catTier.medium.title", comment: "")
         case .high:
-            return NSLocalizedString("tier.high.title", comment: "")
+            return NSLocalizedString("catTier.high.title", comment: "")
         case .complete:
-            return NSLocalizedString("tier.complete.title", comment: "")
+            return NSLocalizedString("catTier.complete.title", comment: "")
         }
     }
 
     var subtitle: String {
         switch self {
         case .low:
-            return NSLocalizedString("tier.low.subtitle", comment: "")
+            return NSLocalizedString("catTier.low.subtitle", comment: "")
         case .medium:
-            return NSLocalizedString("tier.medium.subtitle", comment: "")
+            return NSLocalizedString("catTier.medium.subtitle", comment: "")
         case .high:
-            return NSLocalizedString("tier.high.subtitle", comment: "")
+            return NSLocalizedString("catTier.high.subtitle", comment: "")
         case .complete:
-            return NSLocalizedString("tier.complete.subtitle", comment: "")
+            return NSLocalizedString("catTier.complete.subtitle", comment: "")
         }
     }
 

@@ -48,7 +48,7 @@ struct AddHabitSheetView: View {
     private var limitReachedText: String {
         String(
             format: NSLocalizedString(
-                "sheet.addHabit.limitReached.fmt",
+                "addHabitSheet.limitReached.fmt",
                 comment: "Shown when the user reaches the max number of habits. Uses one %d placeholder."
             ),
             HabitsStore.maxHabits
@@ -58,43 +58,43 @@ struct AddHabitSheetView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(NSLocalizedString("sheet.addHabit.section.emoji.title", comment: "Add habit section title: emoji")) {
+                Section(NSLocalizedString("addHabitSheet.section.emoji.title", comment: "Add habit section title: emoji")) {
                     TextField(
-                        NSLocalizedString("sheet.addHabit.section.emoji.placeholder", comment: "Add habit emoji placeholder"),
+                        NSLocalizedString("addHabitSheet.section.emoji.placeholder", comment: "Add habit emoji placeholder"),
                         text: $emoji
                     )
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                 }
 
-                Section(NSLocalizedString("sheet.addHabit.section.name.title", comment: "Add habit section title: name")) {
+                Section(NSLocalizedString("addHabitSheet.section.name.title", comment: "Add habit section title: name")) {
                     TextField(
-                        NSLocalizedString("sheet.addHabit.section.name.placeholder", comment: "Add habit name placeholder"),
+                        NSLocalizedString("addHabitSheet.section.name.placeholder", comment: "Add habit name placeholder"),
                         text: $name
                     )
                     .textInputAutocapitalization(.words)
                 }
 
-                Section(NSLocalizedString("sheet.addHabit.section.unit.title", comment: "Add habit section title: measure")) {
+                Section(NSLocalizedString("addHabitSheet.section.unit.title", comment: "Add habit section title: measure")) {
                     TextField(
-                        NSLocalizedString("sheet.addHabit.section.unit.placeholder", comment: "Add habit measure placeholder"),
+                        NSLocalizedString("addHabitSheet.section.unit.placeholder", comment: "Add habit measure placeholder"),
                         text: $unit
                     )
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                 }
 
-                Section(NSLocalizedString("sheet.addHabit.section.goal.title", comment: "Add habit section title: target")) {
+                Section(NSLocalizedString("addHabitSheet.section.goal.title", comment: "Add habit section title: target")) {
                     TextField(
-                        NSLocalizedString("sheet.addHabit.section.goal.placeholder", comment: "Add habit target placeholder"),
+                        NSLocalizedString("addHabitSheet.section.goal.placeholder", comment: "Add habit target placeholder"),
                         text: $goalText
                     )
                     .keyboardType(.numberPad)
                 }
 
-                Section(NSLocalizedString("sheet.addHabit.section.step.title", comment: "Add habit section title: log step")) {
+                Section(NSLocalizedString("addHabitSheet.section.step.title", comment: "Add habit section title: log step")) {
                     TextField(
-                        NSLocalizedString("sheet.addHabit.section.step.placeholder", comment: "Add habit log step placeholder"),
+                        NSLocalizedString("addHabitSheet.section.step.placeholder", comment: "Add habit log step placeholder"),
                         text: $stepText
                     )
                     .keyboardType(.numberPad)
@@ -106,17 +106,17 @@ struct AddHabitSheetView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .navigationTitle(NSLocalizedString("sheet.addHabit.title", comment: "Add Habit navigation title"))
+            .navigationTitle(NSLocalizedString("addHabitSheet.title", comment: "Add Habit navigation title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(NSLocalizedString("action.cancel", comment: "Cancel button title")) {
+                    Button(NSLocalizedString("common.action.cancel", comment: "Cancel button title")) {
                         dismiss()
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(NSLocalizedString("action.save", comment: "Save button title")) {
+                    Button(NSLocalizedString("common.action.save", comment: "Save button title")) {
                         let created = habitsStore.addHabit(
                             name: trimmedName,
                             emoji: trimmedEmoji,

@@ -28,20 +28,20 @@ struct EditHabitSheetView: View {
                     }
                     .onDelete(perform: delete)
                 } header: {
-                    Text(NSLocalizedString("sheet.editHabits.section.title", comment: "Header title for habits list section"))
+                    Text(NSLocalizedString("editHabitsSheet.section.title", comment: "Header title for habits list section"))
                 } footer: {
-                    Text(NSLocalizedString("sheet.editHabits.footer.waterProtected", comment: "Footer note explaining that Water cannot be deleted"))
+                    Text(NSLocalizedString("editHabitsSheet.footer.waterProtected", comment: "Footer note explaining that Water cannot be deleted"))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .padding(.top, 20)
                 }
             }
             .environment(\.editMode, $editMode)
-            .navigationTitle(NSLocalizedString("sheet.editHabits.title", comment: "Edit habits sheet navigation title"))
+            .navigationTitle(NSLocalizedString("editHabitsSheet.title", comment: "Edit habits sheet navigation title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(NSLocalizedString("action.back", comment: "Back button title")) {
+                    Button(NSLocalizedString("common.action.back", comment: "Back button title")) {
                         dismiss()
                     }
                     .tint(.primary) // black in light, white in dark (system default)
@@ -49,7 +49,7 @@ struct EditHabitSheetView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack(spacing: 12) {
-                        Button(NSLocalizedString("action.add", comment: "Add button title")) {
+                        Button(NSLocalizedString("common.action.add", comment: "Add button title")) {
                             isPresentingAddHabit = true
                         }
                         .disabled(!canAddMore)
@@ -57,8 +57,8 @@ struct EditHabitSheetView: View {
 
                         Button(
                             editMode.isEditing
-                            ? NSLocalizedString("action.done", comment: "Done button title")
-                            : NSLocalizedString("action.delete", comment: "Enter delete mode button title")
+                            ? NSLocalizedString("common.action.done", comment: "Done button title")
+                            : NSLocalizedString("common.action.delete", comment: "Enter delete mode button title")
                         ) {
                             withAnimation(.easeInOut(duration: 0.15)) {
                                 editMode = editMode.isEditing ? .inactive : .active
