@@ -168,6 +168,7 @@ private extension TodayMiniView {
 
     var openingCopy: some View {
         Button {
+//          triggerCatWiggle()
         } label: {
             Text(NSLocalizedString("todayMini.opening.text", comment: ""))
                 .multilineTextAlignment(.center)
