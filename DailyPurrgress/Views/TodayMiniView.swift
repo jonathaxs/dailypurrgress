@@ -11,8 +11,13 @@ struct TodayMiniView: View {
     // MARK: - UI State
     @State private var isPresentingEditHabit: Bool = false
     @State private var isConfirmingResetAll: Bool = false
+
     // Increment to trigger a subtle haptic on log actions.
     @State private var hapticTrigger: Int = 0
+
+    // Triggers a quick wiggle animation on the cat when the opening copy is tapped.
+    @State private var catWiggleTrigger: Int = 0
+    @State private var isCatWiggling: Bool = false
 
     // MARK: - Derived State
     private var overallProgress: Double {
@@ -55,6 +60,10 @@ private extension TodayMiniView {
 
                 HStack(spacing: 18) {
                     CatMoodView(tier: overallTier)
+                        .rotationEffect(isCatWiggling ? .degrees(-7) : .degrees(0))
+                        .scaleEffect(isCatWiggling ? 1.04 : 1.0)
+                        .animation(.spring(response: 0.22, dampingFraction: 0.35), value: isCatWiggling)
+                        .id(catWiggleTrigger)
 
                     ProgressRingView(
                         progress: overallProgress,
@@ -132,9 +141,22 @@ private extension TodayMiniView {
     }
 
     var openingCopy: some View {
-        Text(NSLocalizedString("todayMini.opening.text", comment: ""))
-            .font(.headline)
-            .multilineTextAlignment(.center)
+        Button {
+            // Trigger haptic + a small cat wiggle.
+            hapticTrigger += 1
+            catWiggleTrigger += 1
+            isCatWiggling = true
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                isCatWiggling = false
+            }
+        } label: {
+            Text(NSLocalizedString("todayMini.opening.text", comment: ""))
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 280)
+        }
+        .buttonStyle(.bordered)
+        .controlSize(.large)
     }
 }
 
