@@ -17,6 +17,8 @@ struct AddHabitSheetView: View {
     @State private var goalText: String = ""
     @State private var stepText: String = ""
     @State private var emoji: String = ""
+    // Haptic trigger for Save action
+    @State private var saveHapticTick: Int = 0
 
     // MARK: - Validation Helpers
 
@@ -135,6 +137,7 @@ struct AddHabitSheetView: View {
                         )
 
                         if created {
+                            saveHapticTick += 1
                             dismiss()
                         }
                     }
@@ -143,5 +146,6 @@ struct AddHabitSheetView: View {
                 }
             }
         }
+        .sensoryFeedback(.success, trigger: saveHapticTick)
     }
 }
