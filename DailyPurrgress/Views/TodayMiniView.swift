@@ -78,10 +78,8 @@ private extension TodayMiniView {
                         triggerCatWiggle()
                     } label: {
                         CatMoodView(tier: overallTier)
-                            .rotationEffect(isCatWiggling ? .degrees(-7) : .degrees(0))
-                            .scaleEffect(isCatWiggling ? 1.04 : 1.0)
-                            .animation(.spring(response: 0.22, dampingFraction: 0.35), value: isCatWiggling)
-                            .id(catWiggleTrigger)
+                            .scaleEffect(isCatWiggling ? 1.14 : 1.0)
+                            .animation(.spring(response: 0.28, dampingFraction: 0.62), value: isCatWiggling)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(Text(NSLocalizedString("a11y.catMood.label", comment: "")))
