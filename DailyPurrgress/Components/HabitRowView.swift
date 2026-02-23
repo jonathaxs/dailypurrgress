@@ -121,7 +121,7 @@ private extension HabitRowView {
                     .frame(maxWidth: .infinity, minHeight: 25)
             }
             .confirmationDialog(
-                tf("common.confirm.reset.title.fmt", "\(habit.emoji) \(habit.name)"),
+                tf("common.confirm.reset.title.fmt", "\(habit.name)"),
                 isPresented: $isConfirmingReset,
                 titleVisibility: .visible
             ) {
