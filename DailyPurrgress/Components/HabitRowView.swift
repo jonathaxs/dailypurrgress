@@ -63,6 +63,7 @@ struct HabitRowView: View {
         .accessibilityLabel(habit.name)
         .accessibilityValue(progressAccessibilityValue)
         .sensoryFeedback(.warning, trigger: resetHapticTick)
+        .sensoryFeedback(.selection, trigger: sliderHapticTick)
     }
 }
 
@@ -117,7 +118,6 @@ private extension HabitRowView {
         .accessibilityLabel(t("a11y.habit.slider.label"))
         .accessibilityValue(sliderAccessibilityValue)
         .accessibilityHint(t("a11y.habit.slider.hint"))
-        .sensoryFeedback(.selection, trigger: sliderHapticTick)
     }
 
     var actions: some View {
@@ -134,11 +134,13 @@ private extension HabitRowView {
                 titleVisibility: .visible
             ) {
                 Button(t("common.action.reset"), role: .destructive) {
-                    Task {
+                    // Double haptic only when the reset actually happens.
+                    Task { @MainActor in
                         resetHapticTick += 1
                         try? await Task.sleep(nanoseconds: 90_000_000)
                         resetHapticTick += 1
                     }
+
                     onReset()
                 }
 
@@ -180,7 +182,7 @@ private extension HabitRowView {
     var sliderAccessibilityValue: String {
         tf("a11y.unitValue.fmt", habit.current, habit.unit)
     }
-    
+
     var clampedProgress: Double {
         min(max(habit.progress, 0), 1)
     }
