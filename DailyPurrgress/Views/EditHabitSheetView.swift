@@ -76,7 +76,7 @@ struct EditHabitSheetView: View {
                             }
                         }
                         // Visual cue: Done (blue) vs Edit (green)
-                        .foregroundStyle(editMode.isEditing ? .blue : .green)
+                        .foregroundStyle(editMode.isEditing ? .blue : .blue)
                     }
                 }
             }
