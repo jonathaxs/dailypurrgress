@@ -9,7 +9,12 @@ struct HabitRowView: View {
     let onSetCurrent: (Int) -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State private var isConfirmingReset: Bool = false
+
+    // Haptic triggers (Int ticks work well with `sensoryFeedback(trigger:)`).
+    @State private var resetHapticTick: Int = 0
+    @State private var sliderHapticTick: Int = 0
 
     private func t(_ key: String) -> String {
         NSLocalizedString(key, comment: "")
@@ -57,6 +62,7 @@ struct HabitRowView: View {
         .accessibilityElement(children: .contain)
         .accessibilityLabel(habit.name)
         .accessibilityValue(progressAccessibilityValue)
+        .sensoryFeedback(.warning, trigger: resetHapticTick)
     }
 }
 
@@ -97,6 +103,7 @@ private extension HabitRowView {
                 let clamped = min(max(rounded, 0), goal)
 
                 guard clamped != habit.current else { return }
+                sliderHapticTick += 1
                 onSetCurrent(clamped)
             }
         )
@@ -110,6 +117,7 @@ private extension HabitRowView {
         .accessibilityLabel(t("a11y.habit.slider.label"))
         .accessibilityValue(sliderAccessibilityValue)
         .accessibilityHint(t("a11y.habit.slider.hint"))
+        .sensoryFeedback(.selection, trigger: sliderHapticTick)
     }
 
     var actions: some View {
@@ -126,6 +134,11 @@ private extension HabitRowView {
                 titleVisibility: .visible
             ) {
                 Button(t("common.action.reset"), role: .destructive) {
+                    Task {
+                        resetHapticTick += 1
+                        try? await Task.sleep(nanoseconds: 90_000_000)
+                        resetHapticTick += 1
+                    }
                     onReset()
                 }
 
