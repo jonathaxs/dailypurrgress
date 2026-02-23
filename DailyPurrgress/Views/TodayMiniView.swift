@@ -15,6 +15,9 @@ struct TodayMiniView: View {
     // Increment to trigger a subtle haptic on log actions.
     @State private var hapticTrigger: Int = 0
 
+    // Increment to trigger a double haptic when a reset is confirmed.
+    @State private var resetHapticTrigger: Int = 0
+
     // Triggers a quick wiggle animation on the cat when the opening copy is tapped.
     @State private var catWiggleTrigger: Int = 0
     @State private var isCatWiggling: Bool = false
@@ -35,11 +38,23 @@ struct TodayMiniView: View {
         CatTier.from(progress: overallProgress)
     }
 
+    private func triggerCatWiggle() {
+        // Trigger haptic + a small cat wiggle.
+        hapticTrigger += 1
+        catWiggleTrigger += 1
+        isCatWiggling = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            isCatWiggling = false
+        }
+    }
+
     var body: some View {
         NavigationStack {
             content
                 .padding()
                 .sensoryFeedback(.impact, trigger: hapticTrigger)
+                .sensoryFeedback(.warning, trigger: resetHapticTrigger)
                 .sheet(isPresented: $isPresentingEditHabit) {
                     EditHabitSheetView()
                         .environmentObject(habitsStore)
@@ -59,11 +74,18 @@ private extension TodayMiniView {
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 HStack(spacing: 18) {
-                    CatMoodView(tier: overallTier)
-                        .rotationEffect(isCatWiggling ? .degrees(-7) : .degrees(0))
-                        .scaleEffect(isCatWiggling ? 1.04 : 1.0)
-                        .animation(.spring(response: 0.22, dampingFraction: 0.35), value: isCatWiggling)
-                        .id(catWiggleTrigger)
+                    Button {
+                        triggerCatWiggle()
+                    } label: {
+                        CatMoodView(tier: overallTier)
+                            .rotationEffect(isCatWiggling ? .degrees(-7) : .degrees(0))
+                            .scaleEffect(isCatWiggling ? 1.04 : 1.0)
+                            .animation(.spring(response: 0.22, dampingFraction: 0.35), value: isCatWiggling)
+                            .id(catWiggleTrigger)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text(NSLocalizedString("a11y.catMood.label", comment: "")))
+                    .accessibilityHint(Text(NSLocalizedString("a11y.catMood.hint", comment: "")))
 
                     ProgressRingView(
                         progress: overallProgress,
@@ -116,7 +138,6 @@ private extension TodayMiniView {
                         isPresentingEditHabit = true
                     }
                     .buttonStyle(.bordered)
-                    .tint(.green)
                 }
                 .frame(maxWidth: 330)
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -127,6 +148,13 @@ private extension TodayMiniView {
                     titleVisibility: .visible
                 ) {
                     Button(NSLocalizedString("common.action.resetAll", comment: ""), role: .destructive) {
+                        // Double haptic only when the reset actually happens.
+                        Task { @MainActor in
+                            resetHapticTrigger += 1
+                            try? await Task.sleep(nanoseconds: 120_000_000)
+                            resetHapticTrigger += 1
+                        }
+
                         // Clear all habits' progress for today.
                         withAnimation(.easeInOut(duration: 0.2)) {
                             habitsStore.resetAll()
@@ -142,20 +170,11 @@ private extension TodayMiniView {
 
     var openingCopy: some View {
         Button {
-            // Trigger haptic + a small cat wiggle.
-            hapticTrigger += 1
-            catWiggleTrigger += 1
-            isCatWiggling = true
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                isCatWiggling = false
-            }
         } label: {
             Text(NSLocalizedString("todayMini.opening.text", comment: ""))
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 280)
         }
-        .buttonStyle(.bordered)
         .controlSize(.large)
     }
 }
