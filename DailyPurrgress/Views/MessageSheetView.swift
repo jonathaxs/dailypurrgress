@@ -13,8 +13,8 @@ struct InspirationalMessageSheetView: View {
     let defaultMessage: String
 
     @State private var draft: String
-    @State private var isConfirmingReset: Bool = false
     @State private var saveHapticTick: Int = 0
+    @State private var resetHapticTick: Int = 0
 
     private func t(_ key: String) -> String {
         NSLocalizedString(key, comment: "")
@@ -58,7 +58,9 @@ struct InspirationalMessageSheetView: View {
 
                 Section {
                     Button(t("inspirationalMessageSheet.resetToDefault"), role: .destructive) {
-                        isConfirmingReset = true
+                        // Only update the draft. Persisting happens on Save.
+                        draft = defaultMessage
+                        resetHapticTick += 1
                     }
                 }
             }
@@ -83,20 +85,8 @@ struct InspirationalMessageSheetView: View {
                     .tint(.blue)
                 }
             }
-            .confirmationDialog(
-                t("inspirationalMessageSheet.resetToDefault"),
-                isPresented: $isConfirmingReset,
-                titleVisibility: .visible
-            ) {
-                Button(t("inspirationalMessageSheet.resetToDefaultDialogButton"), role: .destructive) {
-                    storedMessage = ""
-                    draft = defaultMessage
-                }
-                Button(t("common.action.cancel"), role: .cancel) {}
-            } message: {
-                Text("\"\(defaultMessage)\"")
-            }
             .sensoryFeedback(.success, trigger: saveHapticTick)
+            .sensoryFeedback(.impact, trigger: resetHapticTick)
         }
     }
 }
