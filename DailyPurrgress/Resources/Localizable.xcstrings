@@ -97,6 +97,9 @@
         }
       }
     },
+    "a11y.habit.undo.label/hint" : {
+      "extractionState" : "manual"
+    },
     "a11y.progressRing.hint" : {
       "comment" : "Accessibility hint describing the progress ring",
       "localizations" : {
@@ -636,6 +639,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Save"
+          }
+        }
+      }
+    },
+    "common.action.undo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undo"
           }
         }
       }
