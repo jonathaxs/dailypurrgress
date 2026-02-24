@@ -1,4 +1,6 @@
-// HabitStore.swift ⌘ @jonathaxs
+//  HabitStore.swift ⌘
+//  Created by @jonathaxs
+//  Swift Student Challenge 2026
 
 import Foundation
 import Combine
@@ -132,6 +134,16 @@ final class HabitsStore: ObservableObject {
 
         var updated = habits
         updated[index].logStep()
+        habits = updated
+
+        saveNow()
+    }
+
+    func undoStep(for id: UUID) {
+        guard let index = habits.firstIndex(where: { $0.id == id }) else { return }
+
+        var updated = habits
+        updated[index].undoStep()
         habits = updated
 
         saveNow()
