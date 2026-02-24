@@ -13,44 +13,95 @@ enum CatTier: Int, CaseIterable, Identifiable {
     // MARK: - Visual Identity
 
     var emoji: String {
+        let defaults = UserDefaults.standard
+
+        let key: String
+        let defaultKey: String
+
         switch self {
         case .low:
-            return NSLocalizedString("catTier.low.emoji", comment: "")
+            key = "DailyPurrgress.catTier.emoji.low"
+            defaultKey = "catTier.low.emoji"
         case .medium:
-            return NSLocalizedString("catTier.medium.emoji", comment: "")
+            key = "DailyPurrgress.catTier.emoji.medium"
+            defaultKey = "catTier.medium.emoji"
         case .high:
-            return NSLocalizedString("catTier.high.emoji", comment: "")
+            key = "DailyPurrgress.catTier.emoji.high"
+            defaultKey = "catTier.high.emoji"
         case .complete:
-            return NSLocalizedString("catTier.complete.emoji", comment: "")
+            key = "DailyPurrgress.catTier.emoji.complete"
+            defaultKey = "catTier.complete.emoji"
         }
+
+        let override = defaults.string(forKey: key)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        if override.isEmpty == false {
+            return override
+        }
+
+        return NSLocalizedString(defaultKey, comment: "")
     }
 
     // MARK: - Copy
 
     var title: String {
+        let defaults = UserDefaults.standard
+
+        let key: String
+        let defaultKey: String
+
         switch self {
         case .low:
-            return NSLocalizedString("catTier.low.title", comment: "")
+            key = "DailyPurrgress.catTier.title.low"
+            defaultKey = "catTier.low.title"
         case .medium:
-            return NSLocalizedString("catTier.medium.title", comment: "")
+            key = "DailyPurrgress.catTier.title.medium"
+            defaultKey = "catTier.medium.title"
         case .high:
-            return NSLocalizedString("catTier.high.title", comment: "")
+            key = "DailyPurrgress.catTier.title.high"
+            defaultKey = "catTier.high.title"
         case .complete:
-            return NSLocalizedString("catTier.complete.title", comment: "")
+            key = "DailyPurrgress.catTier.title.complete"
+            defaultKey = "catTier.complete.title"
         }
+
+        let override = defaults.string(forKey: key)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        if override.isEmpty == false {
+            return override
+        }
+
+        return NSLocalizedString(defaultKey, comment: "")
     }
 
     var subtitle: String {
+        let defaults = UserDefaults.standard
+
+        let key: String
+        let defaultKey: String
+
         switch self {
         case .low:
-            return NSLocalizedString("catTier.low.subtitle", comment: "")
+            key = "DailyPurrgress.catTier.subtitle.low"
+            defaultKey = "catTier.low.subtitle"
         case .medium:
-            return NSLocalizedString("catTier.medium.subtitle", comment: "")
+            key = "DailyPurrgress.catTier.subtitle.medium"
+            defaultKey = "catTier.medium.subtitle"
         case .high:
-            return NSLocalizedString("catTier.high.subtitle", comment: "")
+            key = "DailyPurrgress.catTier.subtitle.high"
+            defaultKey = "catTier.high.subtitle"
         case .complete:
-            return NSLocalizedString("catTier.complete.subtitle", comment: "")
+            key = "DailyPurrgress.catTier.subtitle.complete"
+            defaultKey = "catTier.complete.subtitle"
         }
+
+        let override = defaults.string(forKey: key)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        if override.isEmpty == false {
+            return override
+        }
+
+        return NSLocalizedString(defaultKey, comment: "")
     }
 
     // MARK: - Progress Rules
