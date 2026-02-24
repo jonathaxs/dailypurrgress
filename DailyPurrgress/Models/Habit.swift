@@ -1,4 +1,6 @@
-// Habit.swift ⌘ @jonathaxs
+//  Habit.swift ⌘
+//  Created by @jonathaxs
+//  Swift Student Challenge 2026
 
 import Foundation
 
@@ -73,6 +75,11 @@ struct Habit: Identifiable, Codable, Equatable {
     mutating func logStep() {
         guard step > 0 else { return }
         current = min(current + step, goal)
+    }
+
+    mutating func undoStep() {
+        guard step > 0 else { return }
+        current = max(current - step, 0)
     }
 
     mutating func reset() {
