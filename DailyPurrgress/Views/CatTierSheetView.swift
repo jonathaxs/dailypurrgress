@@ -1,5 +1,5 @@
 //  CatTierSheetView.swift ⌘
-//  Created by @jonathaxs.
+//  Created by @jonathaxs
 //  Swift Student Challenge 2026
 
 import SwiftUI
@@ -13,6 +13,9 @@ struct CatTierSheetView: View {
     @AppStorage("DailyPurrgress.catTier.emoji.medium") private var mediumEmojiStored: String = ""
     @AppStorage("DailyPurrgress.catTier.emoji.high") private var highEmojiStored: String = ""
     @AppStorage("DailyPurrgress.catTier.emoji.complete") private var completeEmojiStored: String = ""
+
+    // Used to force SwiftUI to refresh views that read CatTier values via UserDefaults.
+    @AppStorage("DailyPurrgress.catTier.refreshTick") private var refreshTick: Int = 0
 
     @AppStorage("DailyPurrgress.catTier.title.low") private var lowTitleStored: String = ""
     @AppStorage("DailyPurrgress.catTier.title.medium") private var mediumTitleStored: String = ""
@@ -154,6 +157,9 @@ struct CatTierSheetView: View {
         mediumSubtitleStored = (mediumSubtitle.isEmpty || mediumSubtitle == defaultSubtitle(for: .medium)) ? "" : mediumSubtitle
         highSubtitleStored = (highSubtitle.isEmpty || highSubtitle == defaultSubtitle(for: .high)) ? "" : highSubtitle
         completeSubtitleStored = (completeSubtitle.isEmpty || completeSubtitle == defaultSubtitle(for: .complete)) ? "" : completeSubtitle
+
+        // Nudge SwiftUI to recompute views that read CatTier overrides indirectly.
+        refreshTick += 1
 
         saveHapticTick += 1
         dismiss()
