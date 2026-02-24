@@ -12,6 +12,8 @@ struct TodayMiniView: View {
     @State private var isPresentingEditHabit: Bool = false
     @State private var isConfirmingResetAll: Bool = false
     @State private var isPresentingInspirationalMessageEditor: Bool = false
+    @State private var isPresentingCatTierEditor: Bool = false
+    @State private var isRingPulsing: Bool = false
 
     @AppStorage("DailyPurrgress.inspirationalMessageOverride")
     private var inspirationalMessageOverride: String = ""
@@ -53,6 +55,14 @@ struct TodayMiniView: View {
         }
     }
 
+    private func triggerRingPulse() {
+        isRingPulsing = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
+            isRingPulsing = false
+        }
+    }
+
     var body: some View {
         NavigationStack {
             content
@@ -70,6 +80,9 @@ struct TodayMiniView: View {
                             comment: "Inspirational Message default"
                         )
                     )
+                }
+                .sheet(isPresented: $isPresentingCatTierEditor) {
+                    CatTierSheetView()
                 }
                 .navigationBarTitleDisplayMode(.inline)
         }
@@ -97,21 +110,28 @@ private extension TodayMiniView {
 
                 HStack(spacing: 18) {
                     Button {
-                        triggerCatWiggle()
+                        isPresentingCatTierEditor = true
                     } label: {
                         CatMoodView(tier: overallTier)
-                            .scaleEffect(isCatWiggling ? 1.14 : 1.0)
-                            .animation(.spring(response: 0.28, dampingFraction: 0.62), value: isCatWiggling)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(Text(NSLocalizedString("a11y.catMood.label", comment: "")))
                     .accessibilityHint(Text(NSLocalizedString("a11y.catMood.hint", comment: "")))
 
-                    ProgressRingView(
-                        progress: overallProgress,
-                        size: 108,
-                        lineWidth: 12
-                    )
+                    Button {
+                        triggerRingPulse()
+                    } label: {
+                        ProgressRingView(
+                            progress: overallProgress,
+                            size: 108,
+                            lineWidth: 12
+                        )
+                        .scaleEffect(isRingPulsing ? 1.08 : 1.0)
+                        .animation(.spring(response: 0.28, dampingFraction: 0.62), value: isRingPulsing)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text(NSLocalizedString("a11y.progressRing.label", comment: "")))
+                    .accessibilityHint(Text(NSLocalizedString("a11y.progressRing.hint", comment: "")))
                 }
                 .frame(maxWidth: .infinity)
                 .frame(maxWidth: .infinity, alignment: .center)
