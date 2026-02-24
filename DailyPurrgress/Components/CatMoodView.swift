@@ -1,10 +1,15 @@
-//  CatMoodView.swift ⌘ @jonathaxs
+//  CatMoodView.swift ⌘
+//  Created by @jonathaxs
+//  Swift Student Challenge 2026
 
 import SwiftUI
 
 struct CatMoodView: View {
     let tier: CatTier
     let wiggleTrigger: Int
+
+    // Forces SwiftUI to re-render when CatTier overrides are saved.
+    @AppStorage("DailyPurrgress.catTier.refreshTick") private var refreshTick: Int = 0
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -25,7 +30,7 @@ struct CatMoodView: View {
                 .opacity(emojiOpacity)
                 .animation(
                     reduceMotion ? nil : .spring(response: 0.4, dampingFraction: 0.75),
-                    value: tier
+                    value: refreshTick
                 )
                 .onChange(of: wiggleTrigger) {
                     triggerWiggle()
@@ -35,15 +40,18 @@ struct CatMoodView: View {
                 .font(.title3)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
-                .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: tier)
+                .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: refreshTick)
 
             Text(tier.subtitle)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: tier)
+                .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: refreshTick)
         }
         .padding(.vertical, 8)
+        // When the refresh tick changes, rebuild this view so `tier.emoji/title/subtitle`
+        // re-evaluate against updated UserDefaults.
+        .id("catMood-\(tier.id)-\(refreshTick)")
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(tier.title)
         .accessibilityValue(tier.subtitle)
