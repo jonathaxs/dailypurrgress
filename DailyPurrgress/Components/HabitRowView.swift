@@ -1,19 +1,18 @@
-//  HabitRowView.swift ⌘ @jonathaxs
+//  HabitRowView.swift ⌘
+//  Created by @jonathaxs
+//  Swift Student Challenge 2026
 
 import SwiftUI
 
 struct HabitRowView: View {
     let habit: Habit
     let onLogStep: () -> Void
-    let onReset: () -> Void
+    let onUndoStep: () -> Void
     let onSetCurrent: (Int) -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    @State private var isConfirmingReset: Bool = false
-
-    // Haptic triggers (Int ticks work well with `sensoryFeedback(trigger:)`).
-    @State private var resetHapticTick: Int = 0
+    @State private var undoHapticTick: Int = 0
     @State private var sliderHapticTick: Int = 0
 
     private func t(_ key: String) -> String {
@@ -27,12 +26,12 @@ struct HabitRowView: View {
     init(
         habit: Habit,
         onLogStep: @escaping () -> Void,
-        onReset: @escaping () -> Void,
+        onUndoStep: @escaping () -> Void,
         onSetCurrent: @escaping (Int) -> Void
     ) {
         self.habit = habit
         self.onLogStep = onLogStep
-        self.onReset = onReset
+        self.onUndoStep = onUndoStep
         self.onSetCurrent = onSetCurrent
     }
 
@@ -62,7 +61,7 @@ struct HabitRowView: View {
         .accessibilityElement(children: .contain)
         .accessibilityLabel(habit.name)
         .accessibilityValue(progressAccessibilityValue)
-        .sensoryFeedback(.warning, trigger: resetHapticTick)
+        .sensoryFeedback(.impact, trigger: undoHapticTick)
         .sensoryFeedback(.selection, trigger: sliderHapticTick)
     }
 }
@@ -123,35 +122,17 @@ private extension HabitRowView {
     var actions: some View {
         HStack(spacing: 10) {
             Button {
-                isConfirmingReset = true
+                guard habit.current > 0 else { return }
+                undoHapticTick += 1
+                onUndoStep()
             } label: {
-                Text(t("common.action.reset"))
+                Text(t("common.action.undo"))
                     .frame(maxWidth: .infinity, minHeight: 25)
-            }
-            .confirmationDialog(
-                tf("common.confirm.reset.title.fmt", "\(habit.name)"),
-                isPresented: $isConfirmingReset,
-                titleVisibility: .visible
-            ) {
-                Button(t("common.action.reset"), role: .destructive) {
-                    // Double haptic only when the reset actually happens.
-                    Task { @MainActor in
-                        resetHapticTick += 1
-                        try? await Task.sleep(nanoseconds: 90_000_000)
-                        resetHapticTick += 1
-                    }
-
-                    onReset()
-                }
-
-                Button(t("common.action.cancel"), role: .cancel) {}
-            } message: {
-                Text(tf("common.confirm.reset.message.fmt", habit.name))
             }
             .buttonStyle(.bordered)
             .disabled(habit.current == 0)
-            .accessibilityLabel(t("a11y.habit.reset.label"))
-            .accessibilityHint(t("a11y.habit.reset.hint"))
+            .accessibilityLabel(t("a11y.habit.undo.label"))
+            .accessibilityHint(t("a11y.habit.undo.hint"))
 
             Button {
                 guard habit.isComplete == false else { return }
@@ -221,7 +202,7 @@ private extension HabitRowView {
     HabitRowView(
         habit: .init(name: "Water", emoji: "💧", unit: "ml", goal: 2000, step: 250, current: 750, isProtected: true),
         onLogStep: {},
-        onReset: {},
+        onUndoStep: {},
         onSetCurrent: { _ in }
     )
     .padding()
