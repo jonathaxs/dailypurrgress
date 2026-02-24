@@ -1,5 +1,5 @@
 // TodayMiniView.swift ⌘
-//  Created by @jonathaxs.
+//  Created by @jonathaxs
 //  Swift Student Challenge 2026
 
 import SwiftUI
@@ -149,9 +149,10 @@ private extension TodayMiniView {
                                 habitsStore.logStep(for: habit.id)
                             }
                         },
-                        onReset: {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                habitsStore.resetHabit(id: habit.id)
+                        onUndoStep: {
+                            hapticTrigger += 1
+                            withAnimation(.spring(response: 0.30, dampingFraction: 0.78)) {
+                                habitsStore.undoStep(for: habit.id)
                             }
                         },
                         onSetCurrent: { newValue in
