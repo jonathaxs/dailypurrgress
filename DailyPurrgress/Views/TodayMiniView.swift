@@ -11,6 +11,10 @@ struct TodayMiniView: View {
     // MARK: - UI State
     @State private var isPresentingEditHabit: Bool = false
     @State private var isConfirmingResetAll: Bool = false
+    @State private var isPresentingInspirationalMessageEditor: Bool = false
+
+    @AppStorage("DailyPurrgress.inspirationalMessageOverride")
+    private var inspirationalMessageOverride: String = ""
 
     // Increment to trigger a subtle haptic on log actions.
     @State private var hapticTrigger: Int = 0
@@ -18,7 +22,7 @@ struct TodayMiniView: View {
     // Increment to trigger a double haptic when a reset is confirmed.
     @State private var resetHapticTrigger: Int = 0
 
-    // Triggers a quick wiggle animation on the cat when the opening copy is tapped.
+    // Triggers a quick wiggle animation on the cat when the inspirational message is tapped.
     @State private var catWiggleTrigger: Int = 0
     @State private var isCatWiggling: Bool = false
 
@@ -59,6 +63,14 @@ struct TodayMiniView: View {
                     EditHabitSheetView()
                         .environmentObject(habitsStore)
                 }
+                .sheet(isPresented: $isPresentingInspirationalMessageEditor) {
+                    InspirationalMessageSheetView(
+                        defaultMessage: NSLocalizedString(
+                            "todayMini.inspirationalMessage.default",
+                            comment: "Inspirational Message default"
+                        )
+                    )
+                }
                 .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -67,10 +79,20 @@ struct TodayMiniView: View {
 // MARK: - Sections
 
 private extension TodayMiniView {
+    private var inspirationalMessageText: String {
+        let defaultMessage = NSLocalizedString(
+            "todayMini.inspirationalMessage.default",
+            comment: "Inspirational Message default"
+        )
+
+        let trimmedOverride = inspirationalMessageOverride.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmedOverride.isEmpty ? defaultMessage : trimmedOverride
+    }
+
     var content: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 8) {
-                openingCopy
+                inspirationalMessage
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 HStack(spacing: 18) {
@@ -166,15 +188,17 @@ private extension TodayMiniView {
         }
     }
 
-    var openingCopy: some View {
+    var inspirationalMessage: some View {
         Button {
-//          triggerCatWiggle()
+            isPresentingInspirationalMessageEditor = true
         } label: {
-            Text(NSLocalizedString("todayMini.opening.text", comment: ""))
+            Text(inspirationalMessageText)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 280)
         }
         .controlSize(.large)
+        .accessibilityLabel(Text("Inspirational message"))
+        .accessibilityHint(Text("Double tap to edit"))
     }
 }
 
