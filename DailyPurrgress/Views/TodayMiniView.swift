@@ -84,12 +84,14 @@ private extension TodayMiniView {
         static let heroAreaRatio: CGFloat = 0.36
         static let portraitSectionSpacing: CGFloat = 15
         static let heroInnerSpacing: CGFloat = 12
+        static let heroSectionSpacing: CGFloat = 8
         static let heroRowSpacing: CGFloat = 18
         static let footerSpacing: CGFloat = 12
         static let ringSize: CGFloat = 108
         static let ringLineWidth: CGFloat = 12
         static let messageMaxWidth: CGFloat = 320
         static let habitsBottomPadding: CGFloat = 16
+        static let habitsTopPadding: CGFloat = 12
         static let ringPulseDuration: TimeInterval = 0.20
         static let resetDoubleHapticDelayNanos: UInt64 = 120_000_000
         static let resetAnimationDuration: TimeInterval = 0.20
@@ -162,15 +164,11 @@ private extension TodayMiniView {
                     // This keeps the whole layout centered in portrait when there are few habits.
                     ViewThatFits(in: .vertical) {
                         // No scroll when everything fits.
-                        habitsSection
-                            .padding(.bottom, UI.habitsBottomPadding)
-                            .frame(maxWidth: .infinity, alignment: .center)
+                        habitsContent
 
                         // Scroll only when content doesn't fit.
                         ScrollView {
-                            habitsSection
-                                .padding(.bottom, UI.habitsBottomPadding)
-                                .frame(maxWidth: .infinity, alignment: .center)
+                            habitsContent
                         }
                         .frame(maxHeight: maxHabitsHeight)
                     }
@@ -188,7 +186,7 @@ private extension TodayMiniView {
             Spacer(minLength: 0)
 
             HStack(alignment: .top, spacing: UI.wideHStackSpacing) {
-                VStack(alignment: .center, spacing: 12) {
+                VStack(alignment: .center, spacing: UI.heroInnerSpacing) {
                     Spacer(minLength: 0)
 
                     inspirationalMessage
@@ -207,9 +205,7 @@ private extension TodayMiniView {
                         VStack(spacing: 0) {
                             Spacer(minLength: 0)
 
-                            habitsSection
-                                .padding(.bottom, UI.habitsBottomPadding)
-                                .frame(maxWidth: .infinity, alignment: .center)
+                            habitsContent
 
                             Spacer(minLength: 0)
                         }
@@ -226,7 +222,7 @@ private extension TodayMiniView {
     }
 
     var heroSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: UI.heroSectionSpacing) {
             inspirationalMessage
                 .frame(maxWidth: .infinity, alignment: .center)
 
@@ -290,6 +286,13 @@ private extension TodayMiniView {
                 .frame(maxWidth: .infinity, alignment: .center)
             }
         }
+    }
+
+    var habitsContent: some View {
+        habitsSection
+            .padding(.top, UI.habitsTopPadding)
+            .padding(.bottom, UI.habitsBottomPadding)
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 
     var footerControls: some View {

@@ -46,6 +46,10 @@ struct CatMoodView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.9)
+                .frame(maxWidth: 190)
+                .fixedSize(horizontal: false, vertical: true)
                 .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: refreshTick)
         }
         .padding(.vertical, 8)
