@@ -19,10 +19,10 @@ struct TodayMiniView: View {
     private var inspirationalMessageOverride: String = ""
 
     // Increment to trigger a subtle haptic on log actions.
-    @State private var hapticTrigger: Int = 0
+    @State private var logHapticTick: Int = 0
 
     // Increment to trigger a double haptic when a reset is confirmed.
-    @State private var resetHapticTrigger: Int = 0
+    @State private var resetHapticTick: Int = 0
 
     // MARK: - Derived State
     private var overallProgress: Double {
@@ -43,7 +43,7 @@ struct TodayMiniView: View {
     private func triggerRingPulse() {
         isRingPulsing = true
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + UI.ringPulseDuration) {
             isRingPulsing = false
         }
     }
@@ -54,19 +54,14 @@ struct TodayMiniView: View {
                 adaptiveContent(for: proxy.size)
                     .padding()
             }
-            .sensoryFeedback(.impact, trigger: hapticTrigger)
-            .sensoryFeedback(.warning, trigger: resetHapticTrigger)
+            .sensoryFeedback(.impact, trigger: logHapticTick)
+            .sensoryFeedback(.warning, trigger: resetHapticTick)
             .sheet(isPresented: $isPresentingEditHabit) {
                 EditHabitSheetView()
                     .environmentObject(habitsStore)
             }
             .sheet(isPresented: $isPresentingInspirationalMessageEditor) {
-                InspirationalMessageSheetView(
-                    defaultMessage: NSLocalizedString(
-                        "todayMini.inspirationalMessage.default",
-                        comment: "Inspirational Message default"
-                    )
-                )
+                InspirationalMessageSheetView(defaultMessage: inspirationalMessageDefault)
             }
             .sheet(isPresented: $isPresentingCatTierEditor) {
                 CatTierSheetView()
@@ -79,25 +74,57 @@ struct TodayMiniView: View {
 // MARK: - Sections
 
 private extension TodayMiniView {
-    private var inspirationalMessageText: String {
-        let defaultMessage = NSLocalizedString(
-            "todayMini.inspirationalMessage.default",
-            comment: "Inspirational Message default"
-        )
+    // MARK: - Constants
 
+    enum UI {
+        static let contentMaxWidth: CGFloat = 330
+        static let heroColumnWidth: CGFloat = 360
+        static let heroAreaMinHeight: CGFloat = 260
+        static let heroAreaMaxHeight: CGFloat = 340
+        static let heroAreaRatio: CGFloat = 0.36
+        static let portraitSectionSpacing: CGFloat = 15
+        static let heroInnerSpacing: CGFloat = 12
+        static let heroRowSpacing: CGFloat = 18
+        static let footerSpacing: CGFloat = 12
+        static let ringSize: CGFloat = 108
+        static let ringLineWidth: CGFloat = 12
+        static let messageMaxWidth: CGFloat = 320
+        static let habitsBottomPadding: CGFloat = 16
+        static let ringPulseDuration: TimeInterval = 0.20
+        static let resetDoubleHapticDelayNanos: UInt64 = 120_000_000
+        static let resetAnimationDuration: TimeInterval = 0.20
+        static let logAnimationResponse: TimeInterval = 0.35
+        static let logAnimationDamping: Double = 0.75
+        static let undoAnimationResponse: TimeInterval = 0.30
+        static let undoAnimationDamping: Double = 0.78
+        static let sliderSetAnimationDuration: TimeInterval = 0.12
+        static let ringPulseScale: Double = 1.08
+        static let wideThreshold: CGFloat = 700
+        static let wideHStackSpacing: CGFloat = 24
+        static let portraitHabitsGap: CGFloat = 15
+    }
+
+    // MARK: - Copy
+
+    private var inspirationalMessageDefault: String {
+        NSLocalizedString(
+            "todayMini.inspirationalMessage.default",
+            comment: "Inspirational message default copy"
+        )
+    }
+
+    private var inspirationalMessageText: String {
         let trimmedOverride = inspirationalMessageOverride.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmedOverride.isEmpty ? defaultMessage : trimmedOverride
+        return trimmedOverride.isEmpty ? inspirationalMessageDefault : trimmedOverride
     }
 
     // MARK: - Layout
 
-    private var contentMaxWidth: CGFloat { 330 }
+    private var contentMaxWidth: CGFloat { UI.contentMaxWidth }
 
     func adaptiveContent(for size: CGSize) -> some View {
-        // Prefer the stacked (iPhone-like) layout in portrait, even on iPad.
-        // Use the split layout only when we truly have a landscape-wide canvas.
         let isLandscape = size.width > size.height
-        let isWide = isLandscape && size.width >= 700
+        let isWide = isLandscape && size.width >= UI.wideThreshold
 
         return Group {
             if isWide {
@@ -108,24 +135,17 @@ private extension TodayMiniView {
         }
     }
 
-    // iPhone-like (portrait) layout:
-    // Container X centers Container 1 (hero) and Container 2 (habits) as a group.
-    // Container 1 centers Container J (message + ring + tier + buttons).
-    // Container 2 holds the habits and grows independently (scrolls only when needed).
     func portraitContent(for size: CGSize) -> some View {
-        // Container 1 height: keep the hero centered and stable while habits grow.
-        // Tuned to feel iPhone-like on iPad portrait too.
-        let heroAreaHeight = min(max(260, size.height * 0.36), 340)
+        let heroAreaHeight = min(max(UI.heroAreaMinHeight, size.height * UI.heroAreaRatio), UI.heroAreaMaxHeight)
 
         return GeometryReader { outerProxy in
-            let maxHabitsHeight = max(0, outerProxy.size.height - heroAreaHeight - 15)
+            let maxHabitsHeight = max(0, outerProxy.size.height - heroAreaHeight - UI.portraitHabitsGap)
 
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
 
-                VStack(spacing: 15) {
-                    // Container 1 (hero) — centers Container J inside it.
-                    VStack(spacing: 12) {
+                VStack(spacing: UI.portraitSectionSpacing) {
+                    VStack(spacing: UI.heroInnerSpacing) {
                         Spacer(minLength: 0)
 
                         heroSection
@@ -138,19 +158,22 @@ private extension TodayMiniView {
                     .frame(maxWidth: .infinity)
                     .frame(height: heroAreaHeight)
 
-                    // Container 2 (habits) — grows up to a max height; centers when short.
-                    ScrollView {
-                        VStack(spacing: 0) {
-                            Spacer(minLength: 0)
+                    // Use `ViewThatFits` so we only introduce scrolling when we actually need it.
+                    // This keeps the whole layout centered in portrait when there are few habits.
+                    ViewThatFits(in: .vertical) {
+                        // No scroll when everything fits.
+                        habitsSection
+                            .padding(.bottom, UI.habitsBottomPadding)
+                            .frame(maxWidth: .infinity, alignment: .center)
 
+                        // Scroll only when content doesn't fit.
+                        ScrollView {
                             habitsSection
-                                .padding(.bottom, 16)
+                                .padding(.bottom, UI.habitsBottomPadding)
                                 .frame(maxWidth: .infinity, alignment: .center)
-
-                            Spacer(minLength: 0)
                         }
+                        .frame(maxHeight: maxHabitsHeight)
                     }
-                    .frame(maxHeight: maxHabitsHeight)
                 }
                 .frame(maxWidth: .infinity)
 
@@ -160,13 +183,11 @@ private extension TodayMiniView {
         }
     }
 
-    // Landscape-wide layout: Container X centers Container 1 (hero column) and Container 2 (habits column).
     func wideContent(for size: CGSize) -> some View {
         VStack(spacing: 0) {
             Spacer(minLength: 0)
 
-            HStack(alignment: .top, spacing: 24) {
-                // Container 1 (hero)
+            HStack(alignment: .top, spacing: UI.wideHStackSpacing) {
                 VStack(alignment: .center, spacing: 12) {
                     Spacer(minLength: 0)
 
@@ -179,21 +200,19 @@ private extension TodayMiniView {
 
                     Spacer(minLength: 0)
                 }
-                .frame(width: 360)
+                .frame(width: UI.heroColumnWidth)
 
-                // Container 2 (habits)
                 GeometryReader { habitsProxy in
                     ScrollView {
                         VStack(spacing: 0) {
                             Spacer(minLength: 0)
 
                             habitsSection
-                                .padding(.bottom, 16)
+                                .padding(.bottom, UI.habitsBottomPadding)
                                 .frame(maxWidth: .infinity, alignment: .center)
 
                             Spacer(minLength: 0)
                         }
-                        // Ensures centering when content is shorter than the available height.
                         .frame(minHeight: habitsProxy.size.height)
                     }
                 }
@@ -203,11 +222,8 @@ private extension TodayMiniView {
 
             Spacer(minLength: 0)
         }
-        // Container X
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
     }
-
-    // MARK: - Building Blocks
 
     var heroSection: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -220,7 +236,7 @@ private extension TodayMiniView {
     }
 
     var heroRow: some View {
-        HStack(spacing: 18) {
+        HStack(spacing: UI.heroRowSpacing) {
             Button {
                 isPresentingCatTierEditor = true
             } label: {
@@ -235,10 +251,10 @@ private extension TodayMiniView {
             } label: {
                 ProgressRingView(
                     progress: overallProgress,
-                    size: 108,
-                    lineWidth: 12
+                    size: UI.ringSize,
+                    lineWidth: UI.ringLineWidth
                 )
-                .scaleEffect(isRingPulsing ? 1.08 : 1.0)
+                .scaleEffect(isRingPulsing ? UI.ringPulseScale : 1.0)
                 .animation(.spring(response: 0.28, dampingFraction: 0.62), value: isRingPulsing)
             }
             .buttonStyle(.plain)
@@ -253,20 +269,19 @@ private extension TodayMiniView {
                 HabitRowView(
                     habit: habit,
                     onLogStep: {
-                        // Haptic tick + animated progress update.
-                        hapticTrigger += 1
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                        logHapticTick += 1
+                        withAnimation(.spring(response: UI.logAnimationResponse, dampingFraction: UI.logAnimationDamping)) {
                             habitsStore.logStep(for: habit.id)
                         }
                     },
                     onUndoStep: {
-                        hapticTrigger += 1
-                        withAnimation(.spring(response: 0.30, dampingFraction: 0.78)) {
+                        logHapticTick += 1
+                        withAnimation(.spring(response: UI.undoAnimationResponse, dampingFraction: UI.undoAnimationDamping)) {
                             habitsStore.undoStep(for: habit.id)
                         }
                     },
                     onSetCurrent: { newValue in
-                        withAnimation(.easeInOut(duration: 0.12)) {
+                        withAnimation(.easeInOut(duration: UI.sliderSetAnimationDuration)) {
                             habitsStore.setCurrent(newValue, for: habit.id)
                         }
                     }
@@ -278,7 +293,7 @@ private extension TodayMiniView {
     }
 
     var footerControls: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: UI.footerSpacing) {
             Button(NSLocalizedString("common.action.editHabits", comment: "")) {
                 isPresentingEditHabit = true
             }
@@ -299,15 +314,13 @@ private extension TodayMiniView {
             titleVisibility: .visible
         ) {
             Button(NSLocalizedString("common.action.resetAll", comment: ""), role: .destructive) {
-                // Double haptic only when the reset actually happens.
                 Task { @MainActor in
-                    resetHapticTrigger += 1
-                    try? await Task.sleep(nanoseconds: 120_000_000)
-                    resetHapticTrigger += 1
+                    resetHapticTick += 1
+                    try? await Task.sleep(nanoseconds: UI.resetDoubleHapticDelayNanos)
+                    resetHapticTick += 1
                 }
 
-                // Clear all habits' progress for today.
-                withAnimation(.easeInOut(duration: 0.2)) {
+                withAnimation(.easeInOut(duration: UI.resetAnimationDuration)) {
                     habitsStore.resetAll()
                 }
             }
@@ -325,11 +338,11 @@ private extension TodayMiniView {
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: 320)
+                .frame(maxWidth: UI.messageMaxWidth)
         }
         .controlSize(.large)
-        .accessibilityLabel(Text("Inspirational message"))
-        .accessibilityHint(Text("Double tap to edit"))
+        .accessibilityLabel(Text(NSLocalizedString("a11y.inspirationalMessage.label", comment: "Accessibility label for the inspirational message button")))
+        .accessibilityHint(Text(NSLocalizedString("a11y.inspirationalMessage.hint", comment: "Accessibility hint for editing the inspirational message")))
     }
 }
 
