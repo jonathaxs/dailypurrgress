@@ -22,6 +22,10 @@ struct EditHabitSheetView: View {
         habitsStore.habits.count < HabitsStore.maxHabits
     }
 
+    private var hasReachedHabitLimit: Bool {
+        !canAddMore
+    }
+
     // MARK: - View
 
     var body: some View {
@@ -42,10 +46,24 @@ struct EditHabitSheetView: View {
                 } header: {
                     Text(NSLocalizedString("editHabitsSheet.section.title", comment: "Header title for habits list section"))
                 } footer: {
-                    Text(NSLocalizedString("editHabitsSheet.footer.waterProtected", comment: "Footer note explaining that Water cannot be deleted"))
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .padding(.top, 20)
+                    VStack(alignment: .leading, spacing: 8) {
+                        if hasReachedHabitLimit {
+                            Text(
+                                NSLocalizedString(
+                                    "editHabitsSheet.footer.limitReached",
+                                    comment: "Footer message shown when the user has reached the maximum number of habits"
+                                )
+                            )
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .padding(.top, 5)
+                        }
+
+                        Text(NSLocalizedString("editHabitsSheet.footer.waterProtected", comment: "Footer note explaining that Water cannot be deleted"))
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .padding(.top, 8)
+                    }
                 }
             }
             .environment(\.editMode, $editMode)
