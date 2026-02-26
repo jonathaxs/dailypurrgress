@@ -795,6 +795,18 @@
         }
       }
     },
+    "editHabitsSheet.footer.limitReached" : {
+      "comment" : "Footer message shown when the user has reached the maximum number of habits",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You’ve reached the maximum number of habits.\nFocus on these for now."
+          }
+        }
+      }
+    },
     "editHabitsSheet.footer.waterProtected" : {
       "comment" : "Footer note explaining that Water cannot be deleted",
       "localizations" : {
