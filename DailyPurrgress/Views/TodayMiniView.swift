@@ -13,8 +13,7 @@ struct TodayMiniView: View {
     @State private var isConfirmingResetAll: Bool = false
     @State private var isPresentingInspirationalMessageEditor: Bool = false
     @State private var isPresentingCatTierEditor: Bool = false
-    @State private var isRingPulsing: Bool = false
-    @State private var isRingHighlighted: Bool = false
+    @GestureState private var isRingPressed: Bool = false
 
     @AppStorage("DailyPurrgress.inspirationalMessageOverride")
     private var inspirationalMessageOverride: String = ""
@@ -39,16 +38,6 @@ struct TodayMiniView: View {
 
     private var overallTier: CatTier {
         CatTier.from(progress: overallProgress)
-    }
-
-    private func triggerRingPulse() {
-        isRingPulsing = true
-        isRingHighlighted = true
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + UI.ringPulseDuration) {
-            isRingPulsing = false
-            isRingHighlighted = false
-        }
     }
 
     var body: some View {
@@ -95,7 +84,6 @@ private extension TodayMiniView {
         static let messageMaxWidth: CGFloat = 320
         static let habitsBottomPadding: CGFloat = 16
         static let habitsTopPadding: CGFloat = 12
-        static let ringPulseDuration: TimeInterval = 0.30
         static let resetDoubleHapticDelayNanos: UInt64 = 120_000_000
         static let resetAnimationDuration: TimeInterval = 0.20
         static let logAnimationResponse: TimeInterval = 0.35
@@ -103,7 +91,7 @@ private extension TodayMiniView {
         static let undoAnimationResponse: TimeInterval = 0.30
         static let undoAnimationDamping: Double = 0.78
         static let sliderSetAnimationDuration: TimeInterval = 0.12
-        static let ringPulseScale: Double = 1.08
+        static let ringPulseScale: Double = 1.20
         static let wideThreshold: CGFloat = 700
         static let wideHStackSpacing: CGFloat = 24
         static let portraitHabitsGap: CGFloat = 15
@@ -242,22 +230,29 @@ private extension TodayMiniView {
                 CatMoodView(tier: overallTier)
             }
             .buttonStyle(.plain)
+            .pressScaleEffect()
             .accessibilityLabel(Text(NSLocalizedString("a11y.catMood.label", comment: "")))
             .accessibilityHint(Text(NSLocalizedString("a11y.catMood.hint", comment: "")))
 
             Button {
-                triggerRingPulse()
+                // Tap still works (no-op). The highlight is driven by press state.
             } label: {
                 ProgressRingView(
                     progress: overallProgress,
                     size: UI.ringSize,
                     lineWidth: UI.ringLineWidth,
-                    overrideRingColor: isRingHighlighted ? .purple : nil
+                    overrideRingColor: isRingPressed ? .purple : nil
                 )
-                .scaleEffect(isRingPulsing ? UI.ringPulseScale : 1.0)
-                .animation(.spring(response: 0.30, dampingFraction: 0.20), value: isRingPulsing)
             }
             .buttonStyle(.plain)
+            .pressScaleEffect()
+            // Keep the ring purple while the user is pressing, matching the scale effect.
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0)
+                    .updating($isRingPressed) { _, state, _ in
+                        state = true
+                    }
+            )
             .accessibilityLabel(Text(NSLocalizedString("a11y.progressRing.label", comment: "")))
             .accessibilityHint(Text(NSLocalizedString("a11y.progressRing.hint", comment: "")))
         }
@@ -305,12 +300,14 @@ private extension TodayMiniView {
                 isPresentingEditHabit = true
             }
             .buttonStyle(.bordered)
+            .pressScaleEffect()
 
             Button(NSLocalizedString("common.action.resetAll", comment: "")) {
                 isConfirmingResetAll = true
             }
             .buttonStyle(.bordered)
             .tint(.red)
+            .pressScaleEffect()
         }
         .frame(maxWidth: contentMaxWidth)
         .frame(maxWidth: .infinity, alignment: .center)
@@ -348,8 +345,40 @@ private extension TodayMiniView {
                 .frame(maxWidth: UI.messageMaxWidth)
         }
         .controlSize(.large)
+        .pressScaleEffect()
         .accessibilityLabel(Text(NSLocalizedString("a11y.inspirationalMessage.label", comment: "Accessibility label for the inspirational message button")))
         .accessibilityHint(Text(NSLocalizedString("a11y.inspirationalMessage.hint", comment: "Accessibility hint for editing the inspirational message")))
+    }
+}
+
+// MARK: - Press Scale Effect
+
+private struct PressScaleEffect: ViewModifier {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @GestureState private var isPressed: Bool = false
+
+    func body(content: Content) -> some View {
+        let scale: CGFloat = reduceMotion ? 1.0 : (isPressed ? TodayMiniView.UI.ringPulseScale : 1.0)
+
+        content
+            .scaleEffect(scale)
+            .animation(
+                reduceMotion ? nil : .spring(response: 0.25, dampingFraction: 0.50),
+                value: isPressed
+            )
+            // Track press state without interfering with Button's tap.
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0)
+                    .updating($isPressed) { _, state, _ in
+                        state = true
+                    }
+            )
+    }
+}
+
+private extension View {
+    func pressScaleEffect() -> some View {
+        modifier(PressScaleEffect())
     }
 }
 
