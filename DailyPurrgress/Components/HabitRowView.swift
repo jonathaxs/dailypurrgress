@@ -197,6 +197,28 @@ private extension HabitRowView {
 
 // MARK: - Button Style
 
+/// A reusable "Apple-like" press interaction for buttons.
+/// Keeps the view slightly larger while the finger is down (like iOS 26 toolbar buttons).
+struct PressScaleButtonStyle: ButtonStyle {
+    var pressedScale: CGFloat = 1.15
+    var response: Double = 0.25
+    var dampingFraction: Double = 0.40
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func makeBody(configuration: Configuration) -> some View {
+        let isPressed = configuration.isPressed
+        let scale: CGFloat = reduceMotion ? 1.0 : (isPressed ? pressedScale : 1.0)
+
+        return configuration.label
+            .scaleEffect(scale)
+            .animation(
+                reduceMotion ? nil : .spring(response: response, dampingFraction: dampingFraction),
+                value: isPressed
+            )
+    }
+}
+
 private struct HabitRowButtonStyle: ButtonStyle {
     enum Variant {
         case bordered
@@ -205,12 +227,17 @@ private struct HabitRowButtonStyle: ButtonStyle {
 
     let variant: Variant
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    // Press scale tuning (matches the Log/Undo feel).
+    private let pressedScale: CGFloat = 1.20
+    private let pressResponse: Double = 0.20
+    private let pressDamping: Double = 0.50
 
     func makeBody(configuration: Configuration) -> some View {
         let isPressed = configuration.isPressed
-        let scale: CGFloat = reduceMotion ? 1.0 : (isPressed ? 1.15 : 1.0)
+        let scale: CGFloat = reduceMotion ? 1.0 : (isPressed ? pressedScale : 1.0)
 
         return configuration.label
             .frame(maxWidth: .infinity, minHeight: 25)
@@ -227,7 +254,7 @@ private struct HabitRowButtonStyle: ButtonStyle {
             .foregroundStyle(foreground)
             .scaleEffect(scale)
             .animation(
-                reduceMotion ? nil : .spring(response: 0.25, dampingFraction: 0.40),
+                reduceMotion ? nil : .spring(response: pressResponse, dampingFraction: pressDamping),
                 value: isPressed
             )
             .opacity(isEnabled ? 1.0 : 0.6)
@@ -247,7 +274,6 @@ private struct HabitRowButtonStyle: ButtonStyle {
         case .bordered:
             return AnyShapeStyle(.thinMaterial)
         case .prominent:
-            // Use the environment accent color to match the app tint.
             return AnyShapeStyle(Color.accentColor.opacity(isPressed ? 0.85 : 1.0))
         }
     }
