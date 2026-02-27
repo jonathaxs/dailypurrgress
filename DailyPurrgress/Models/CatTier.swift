@@ -1,4 +1,6 @@
-// CatTier.swift ⌘ @jonathaxs
+//  CatTier.swift⌘
+//  Created by @jonathaxs
+//  Swift Student Challenge 2026
 
 import Foundation
 

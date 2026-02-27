@@ -1,4 +1,6 @@
-//  HapticsWarmup.swift ⌘ @jonathaxs
+//  HapticsWarmup.swift⌘
+//  Created by @jonathaxs
+//  Swift Student Challenge 2026
 
 //  Prepares the CoreHaptics engine early to avoid first-use latency
 //  when triggering haptic feedback (cold start delay).

@@ -72,8 +72,8 @@ struct CatTierSheetView: View {
 
     // MARK: - Localization
 
-    private func t(_ key: String) -> String {
-        NSLocalizedString(key, comment: "")
+    private func t(_ key: String, comment: String = "") -> String {
+        NSLocalizedString(key, comment: comment)
     }
 
     // MARK: - Helpers
@@ -83,80 +83,93 @@ struct CatTierSheetView: View {
     }
 
     private func oneEmoji(_ value: String) -> String {
-        String(trimmed(value).prefix(1))
+        let clean = trimmed(value)
+        guard clean.isEmpty == false else { return "" }
+        return String(clean.prefix(1))
+    }
+
+    private func emojiOverride(from draft: String, defaultValue: String) -> String {
+        let value = oneEmoji(draft)
+        return (value.isEmpty || value == defaultValue) ? "" : value
+    }
+
+    private func textOverride(from draft: String, defaultValue: String) -> String {
+        let value = trimmed(draft)
+        return (value.isEmpty || value == defaultValue) ? "" : value
+    }
+
+    private enum DefaultKind {
+        case emoji
+        case title
+        case subtitle
+    }
+
+    private func defaultKey(for kind: DefaultKind, tier: CatTier) -> String {
+        switch (kind, tier) {
+        case (.emoji, .low):
+            return "catTier.low.emoji"
+        case (.emoji, .medium):
+            return "catTier.medium.emoji"
+        case (.emoji, .high):
+            return "catTier.high.emoji"
+        case (.emoji, .complete):
+            return "catTier.complete.emoji"
+
+        case (.title, .low):
+            return "catTier.low.title"
+        case (.title, .medium):
+            return "catTier.medium.title"
+        case (.title, .high):
+            return "catTier.high.title"
+        case (.title, .complete):
+            return "catTier.complete.title"
+
+        case (.subtitle, .low):
+            return "catTier.low.subtitle"
+        case (.subtitle, .medium):
+            return "catTier.medium.subtitle"
+        case (.subtitle, .high):
+            return "catTier.high.subtitle"
+        case (.subtitle, .complete):
+            return "catTier.complete.subtitle"
+        }
+    }
+
+    private func defaultString(_ kind: DefaultKind, for tier: CatTier) -> String {
+        NSLocalizedString(defaultKey(for: kind, tier: tier), comment: "")
     }
 
     private func defaultEmoji(for tier: CatTier) -> String {
-        switch tier {
-        case .low:
-            return NSLocalizedString("catTier.low.emoji", comment: "")
-        case .medium:
-            return NSLocalizedString("catTier.medium.emoji", comment: "")
-        case .high:
-            return NSLocalizedString("catTier.high.emoji", comment: "")
-        case .complete:
-            return NSLocalizedString("catTier.complete.emoji", comment: "")
-        }
+        defaultString(.emoji, for: tier)
     }
 
     private func defaultTitle(for tier: CatTier) -> String {
-        switch tier {
-        case .low:
-            return NSLocalizedString("catTier.low.title", comment: "")
-        case .medium:
-            return NSLocalizedString("catTier.medium.title", comment: "")
-        case .high:
-            return NSLocalizedString("catTier.high.title", comment: "")
-        case .complete:
-            return NSLocalizedString("catTier.complete.title", comment: "")
-        }
+        defaultString(.title, for: tier)
     }
 
     private func defaultSubtitle(for tier: CatTier) -> String {
-        switch tier {
-        case .low:
-            return NSLocalizedString("catTier.low.subtitle", comment: "")
-        case .medium:
-            return NSLocalizedString("catTier.medium.subtitle", comment: "")
-        case .high:
-            return NSLocalizedString("catTier.high.subtitle", comment: "")
-        case .complete:
-            return NSLocalizedString("catTier.complete.subtitle", comment: "")
-        }
+        defaultString(.subtitle, for: tier)
     }
 
     private func saveAndDismiss() {
         // Emoji: persist 1 char override; store "" when it matches the default.
-        let lowEmoji = oneEmoji(lowEmojiDraft)
-        let mediumEmoji = oneEmoji(mediumEmojiDraft)
-        let highEmoji = oneEmoji(highEmojiDraft)
-        let completeEmoji = oneEmoji(completeEmojiDraft)
 
-        lowEmojiStored = (lowEmoji == defaultEmoji(for: .low)) ? "" : lowEmoji
-        mediumEmojiStored = (mediumEmoji == defaultEmoji(for: .medium)) ? "" : mediumEmoji
-        highEmojiStored = (highEmoji == defaultEmoji(for: .high)) ? "" : highEmoji
-        completeEmojiStored = (completeEmoji == defaultEmoji(for: .complete)) ? "" : completeEmoji
+        lowEmojiStored = emojiOverride(from: lowEmojiDraft, defaultValue: defaultEmoji(for: .low))
+        mediumEmojiStored = emojiOverride(from: mediumEmojiDraft, defaultValue: defaultEmoji(for: .medium))
+        highEmojiStored = emojiOverride(from: highEmojiDraft, defaultValue: defaultEmoji(for: .high))
+        completeEmojiStored = emojiOverride(from: completeEmojiDraft, defaultValue: defaultEmoji(for: .complete))
 
         // Copy: persist override; store "" when empty OR when it matches the default.
-        let lowTitle = trimmed(lowTitleDraft)
-        let mediumTitle = trimmed(mediumTitleDraft)
-        let highTitle = trimmed(highTitleDraft)
-        let completeTitle = trimmed(completeTitleDraft)
 
-        lowTitleStored = (lowTitle.isEmpty || lowTitle == defaultTitle(for: .low)) ? "" : lowTitle
-        mediumTitleStored = (mediumTitle.isEmpty || mediumTitle == defaultTitle(for: .medium)) ? "" : mediumTitle
-        highTitleStored = (highTitle.isEmpty || highTitle == defaultTitle(for: .high)) ? "" : highTitle
-        completeTitleStored = (completeTitle.isEmpty || completeTitle == defaultTitle(for: .complete)) ? "" : completeTitle
+        lowTitleStored = textOverride(from: lowTitleDraft, defaultValue: defaultTitle(for: .low))
+        mediumTitleStored = textOverride(from: mediumTitleDraft, defaultValue: defaultTitle(for: .medium))
+        highTitleStored = textOverride(from: highTitleDraft, defaultValue: defaultTitle(for: .high))
+        completeTitleStored = textOverride(from: completeTitleDraft, defaultValue: defaultTitle(for: .complete))
 
-        let lowSubtitle = trimmed(lowSubtitleDraft)
-        let mediumSubtitle = trimmed(mediumSubtitleDraft)
-        let highSubtitle = trimmed(highSubtitleDraft)
-        let completeSubtitle = trimmed(completeSubtitleDraft)
-
-        lowSubtitleStored = (lowSubtitle.isEmpty || lowSubtitle == defaultSubtitle(for: .low)) ? "" : lowSubtitle
-        mediumSubtitleStored = (mediumSubtitle.isEmpty || mediumSubtitle == defaultSubtitle(for: .medium)) ? "" : mediumSubtitle
-        highSubtitleStored = (highSubtitle.isEmpty || highSubtitle == defaultSubtitle(for: .high)) ? "" : highSubtitle
-        completeSubtitleStored = (completeSubtitle.isEmpty || completeSubtitle == defaultSubtitle(for: .complete)) ? "" : completeSubtitle
+        lowSubtitleStored = textOverride(from: lowSubtitleDraft, defaultValue: defaultSubtitle(for: .low))
+        mediumSubtitleStored = textOverride(from: mediumSubtitleDraft, defaultValue: defaultSubtitle(for: .medium))
+        highSubtitleStored = textOverride(from: highSubtitleDraft, defaultValue: defaultSubtitle(for: .high))
+        completeSubtitleStored = textOverride(from: completeSubtitleDraft, defaultValue: defaultSubtitle(for: .complete))
 
         // Nudge SwiftUI to recompute views that read CatTier overrides indirectly.
         refreshTick += 1

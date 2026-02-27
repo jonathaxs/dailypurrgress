@@ -73,7 +73,7 @@ struct Habit: Identifiable, Codable, Equatable {
     // MARK: - Mutations
 
     mutating func logStep() {
-        guard step > 0 else { return }
+        guard goal > 0, step > 0 else { return }
         current = min(current + step, goal)
     }
 
@@ -89,17 +89,9 @@ struct Habit: Identifiable, Codable, Equatable {
     // MARK: - Helpers
 
     private mutating func clampProgress() {
-        if goal < 0 { goal = 0 }
-        if step < 0 { step = 0 }
-        if current < 0 { current = 0 }
-
-        if goal > 0 {
-            current = min(current, goal)
-        }
-
-        if goal > 0 {
-            step = min(step, goal)
-        }
+        guard goal > 0 else { return }
+        current = min(current, goal)
+        step = min(step, goal)
     }
 }
 

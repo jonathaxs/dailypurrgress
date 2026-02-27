@@ -1,4 +1,4 @@
-// EditHabitSheetView.swift ⌘
+//  EditHabitSheetView.swift ⌘
 //  Created by @jonathaxs.
 //  Swift Student Challenge 2026
 
@@ -94,7 +94,7 @@ struct EditHabitSheetView: View {
                             }
                         }
                         // Visual cue: Done (blue) vs Edit (green)
-                        .foregroundStyle(editMode.isEditing ? .blue : .blue)
+                        .foregroundStyle(.blue)
                     }
                 }
             }

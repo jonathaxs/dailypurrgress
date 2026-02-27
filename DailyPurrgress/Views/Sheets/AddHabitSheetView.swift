@@ -1,4 +1,4 @@
-// AddHabitSheetView.swift ⌘
+//  AddHabitSheetView.swift ⌘
 //  Created by @jonathaxs.
 //  Swift Student Challenge 2026
 
@@ -26,12 +26,12 @@ struct AddHabitSheetView: View {
         habitsStore.habits.count < HabitsStore.maxHabits
     }
 
-    private var goal: Int {
-        Int(goalText) ?? 0
+    private var goal: Int? {
+        Int(goalText.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
-    private var step: Int {
-        Int(stepText) ?? 0
+    private var step: Int? {
+        Int(stepText.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
     private var trimmedName: String {
@@ -51,6 +51,7 @@ struct AddHabitSheetView: View {
         guard !trimmedName.isEmpty else { return false }
         guard !trimmedUnit.isEmpty else { return false }
         guard !trimmedEmoji.isEmpty else { return false }
+        guard let goal, let step else { return false }
         guard goal > 0, step > 0, step <= goal else { return false }
         return true
     }
@@ -128,6 +129,8 @@ struct AddHabitSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button(NSLocalizedString("common.action.save", comment: "Save button title")) {
+                        guard let goal, let step else { return }
+
                         let created = habitsStore.addHabit(
                             name: trimmedName,
                             emoji: trimmedEmoji,

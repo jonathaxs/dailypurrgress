@@ -5,9 +5,10 @@
 import SwiftUI
 
 struct InspirationalMessageSheetView: View {
+    private static let messageKey = "DailyPurrgress.inspirationalMessageOverride"
     @Environment(\.dismiss) private var dismiss
 
-    @AppStorage("DailyPurrgress.inspirationalMessageOverride")
+    @AppStorage(Self.messageKey)
     private var storedMessage: String = ""
 
     let defaultMessage: String
@@ -24,16 +25,11 @@ struct InspirationalMessageSheetView: View {
         draft.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    private var canSave: Bool {
-        // Allow save always; saving an empty string clears the override.
-        true
-    }
-
     init(defaultMessage: String) {
         self.defaultMessage = defaultMessage
 
         // Start with stored override if present; otherwise show the default.
-        let existing = UserDefaults.standard.string(forKey: "DailyPurrgress.inspirationalMessageOverride") ?? ""
+        let existing = UserDefaults.standard.string(forKey: Self.messageKey) ?? ""
         _draft = State(initialValue: existing.isEmpty ? defaultMessage : existing)
     }
 
@@ -81,7 +77,6 @@ struct InspirationalMessageSheetView: View {
                         saveHapticTick += 1
                         dismiss()
                     }
-                    .disabled(!canSave)
                     .tint(.blue)
                 }
             }
