@@ -95,7 +95,7 @@ private extension TodayMiniView {
         static let messageMaxWidth: CGFloat = 320
         static let habitsBottomPadding: CGFloat = 16
         static let habitsTopPadding: CGFloat = 12
-        static let ringPulseDuration: TimeInterval = 0.20
+        static let ringPulseDuration: TimeInterval = 0.30
         static let resetDoubleHapticDelayNanos: UInt64 = 120_000_000
         static let resetAnimationDuration: TimeInterval = 0.20
         static let logAnimationResponse: TimeInterval = 0.35
@@ -255,7 +255,7 @@ private extension TodayMiniView {
                     overrideRingColor: isRingHighlighted ? .purple : nil
                 )
                 .scaleEffect(isRingPulsing ? UI.ringPulseScale : 1.0)
-                .animation(.spring(response: 0.28, dampingFraction: 0.62), value: isRingPulsing)
+                .animation(.spring(response: 0.30, dampingFraction: 0.20), value: isRingPulsing)
             }
             .buttonStyle(.plain)
             .accessibilityLabel(Text(NSLocalizedString("a11y.progressRing.label", comment: "")))

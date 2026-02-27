@@ -15,9 +15,6 @@ struct HabitRowView: View {
     @State private var undoHapticTick: Int = 0
     @State private var sliderHapticTick: Int = 0
 
-    @State private var isUndoPulsing: Bool = false
-    @State private var isLogPulsing: Bool = false
-
     private func t(_ key: String) -> String {
         NSLocalizedString(key, comment: "")
     }
@@ -26,22 +23,6 @@ struct HabitRowView: View {
         String(format: t(key), arguments: args)
     }
 
-
-    private func pulseUndoButton() {
-        guard !reduceMotion else { return }
-        isUndoPulsing = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
-            isUndoPulsing = false
-        }
-    }
-
-    private func pulseLogButton() {
-        guard !reduceMotion else { return }
-        isLogPulsing = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
-            isLogPulsing = false
-        }
-    }
 
     init(
         habit: Habit,
@@ -145,31 +126,23 @@ private extension HabitRowView {
             Button {
                 guard habit.current > 0 else { return }
                 undoHapticTick += 1
-                pulseUndoButton()
                 onUndoStep()
             } label: {
                 Text(t("common.action.undo"))
-                    .frame(maxWidth: .infinity, minHeight: 25)
             }
-            .buttonStyle(.bordered)
-            .scaleEffect(isUndoPulsing ? 1.08 : 1.0)
-            .animation(reduceMotion ? nil : .spring(response: 0.28, dampingFraction: 0.62), value: isUndoPulsing)
+            .buttonStyle(HabitRowButtonStyle(variant: .bordered))
             .disabled(habit.current == 0)
             .accessibilityLabel(t("a11y.habit.undo.label"))
             .accessibilityHint(t("a11y.habit.undo.hint"))
 
             Button {
-                pulseLogButton()
                 onLogStep()
             } label: {
                 Text(t("common.action.log"))
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
-                    .frame(maxWidth: .infinity, minHeight: 25)
             }
-            .buttonStyle(.borderedProminent)
-            .scaleEffect(isLogPulsing ? 1.08 : 1.0)
-            .animation(reduceMotion ? nil : .spring(response: 0.28, dampingFraction: 0.62), value: isLogPulsing)
+            .buttonStyle(HabitRowButtonStyle(variant: .prominent))
             .disabled(habit.isComplete)
             .opacity(habit.isComplete ? 0.6 : 1.0)
             .accessibilityLabel(tf("a11y.habit.log.label.fmt", habit.name))
@@ -218,6 +191,64 @@ private extension HabitRowView {
             return 0.12
         default:
             return 0.16
+        }
+    }
+}
+
+// MARK: - Button Style
+
+private struct HabitRowButtonStyle: ButtonStyle {
+    enum Variant {
+        case bordered
+        case prominent
+    }
+
+    let variant: Variant
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        let isPressed = configuration.isPressed
+        let scale: CGFloat = reduceMotion ? 1.0 : (isPressed ? 1.15 : 1.0)
+
+        return configuration.label
+            .frame(maxWidth: .infinity, minHeight: 25)
+            .contentShape(Rectangle())
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .background(background(isPressed: isPressed), in: RoundedRectangle(cornerRadius: 21, style: .continuous))
+            .overlay {
+                if variant == .bordered {
+                    RoundedRectangle(cornerRadius: 21, style: .continuous)
+                        .strokeBorder(.secondary.opacity(0.25), lineWidth: 1)
+                }
+            }
+            .foregroundStyle(foreground)
+            .scaleEffect(scale)
+            .animation(
+                reduceMotion ? nil : .spring(response: 0.25, dampingFraction: 0.40),
+                value: isPressed
+            )
+            .opacity(isEnabled ? 1.0 : 0.6)
+    }
+
+    private var foreground: some ShapeStyle {
+        switch variant {
+        case .bordered:
+            return AnyShapeStyle(Color.primary)
+        case .prominent:
+            return AnyShapeStyle(Color.white)
+        }
+    }
+
+    private func background(isPressed: Bool) -> AnyShapeStyle {
+        switch variant {
+        case .bordered:
+            return AnyShapeStyle(.thinMaterial)
+        case .prominent:
+            // Use the environment accent color to match the app tint.
+            return AnyShapeStyle(Color.accentColor.opacity(isPressed ? 0.85 : 1.0))
         }
     }
 }
