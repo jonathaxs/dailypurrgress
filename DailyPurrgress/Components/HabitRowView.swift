@@ -15,12 +15,32 @@ struct HabitRowView: View {
     @State private var undoHapticTick: Int = 0
     @State private var sliderHapticTick: Int = 0
 
+    @State private var isUndoPulsing: Bool = false
+    @State private var isLogPulsing: Bool = false
+
     private func t(_ key: String) -> String {
         NSLocalizedString(key, comment: "")
     }
 
     private func tf(_ key: String, _ args: CVarArg...) -> String {
         String(format: t(key), arguments: args)
+    }
+
+
+    private func pulseUndoButton() {
+        guard !reduceMotion else { return }
+        isUndoPulsing = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
+            isUndoPulsing = false
+        }
+    }
+
+    private func pulseLogButton() {
+        guard !reduceMotion else { return }
+        isLogPulsing = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
+            isLogPulsing = false
+        }
     }
 
     init(
@@ -88,19 +108,20 @@ private extension HabitRowView {
     }
 
     var slider: some View {
-        let maxGoal = Double(max(habit.goal, 0))
-        let step = Double(max(habit.step, 1))
+        let safeGoal = max(habit.goal, 0)
+        let safeStep = max(habit.step, 1)
+
+        let maxGoal = Double(safeGoal)
+        let step = Double(safeStep)
 
         // Slider outputs Double; snap to habit.step and clamp within [0, goal].
         let binding = Binding<Double>(
             get: { Double(habit.current) },
             set: { newValue in
-                let goal = max(habit.goal, 0)
-                guard goal > 0 else { return }
+                guard safeGoal > 0 else { return }
 
-                let stepInt = max(habit.step, 1)
-                let rounded = Int((newValue / Double(stepInt)).rounded()) * stepInt
-                let clamped = min(max(rounded, 0), goal)
+                let rounded = Int((newValue / step).rounded()) * safeStep
+                let clamped = min(max(rounded, 0), safeGoal)
 
                 guard clamped != habit.current else { return }
                 sliderHapticTick += 1
@@ -113,7 +134,7 @@ private extension HabitRowView {
             in: 0...maxGoal,
             step: step
         )
-        .disabled(maxGoal == 0)
+        .disabled(safeGoal == 0)
         .accessibilityLabel(t("a11y.habit.slider.label"))
         .accessibilityValue(sliderAccessibilityValue)
         .accessibilityHint(t("a11y.habit.slider.hint"))
@@ -124,26 +145,31 @@ private extension HabitRowView {
             Button {
                 guard habit.current > 0 else { return }
                 undoHapticTick += 1
+                pulseUndoButton()
                 onUndoStep()
             } label: {
                 Text(t("common.action.undo"))
                     .frame(maxWidth: .infinity, minHeight: 25)
             }
             .buttonStyle(.bordered)
+            .scaleEffect(isUndoPulsing ? 1.08 : 1.0)
+            .animation(reduceMotion ? nil : .spring(response: 0.28, dampingFraction: 0.62), value: isUndoPulsing)
             .disabled(habit.current == 0)
             .accessibilityLabel(t("a11y.habit.undo.label"))
             .accessibilityHint(t("a11y.habit.undo.hint"))
 
             Button {
-                guard habit.isComplete == false else { return }
+                pulseLogButton()
                 onLogStep()
             } label: {
-                Text("Log")
+                Text(t("common.action.log"))
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                     .frame(maxWidth: .infinity, minHeight: 25)
             }
             .buttonStyle(.borderedProminent)
+            .scaleEffect(isLogPulsing ? 1.08 : 1.0)
+            .animation(reduceMotion ? nil : .spring(response: 0.28, dampingFraction: 0.62), value: isLogPulsing)
             .disabled(habit.isComplete)
             .opacity(habit.isComplete ? 0.6 : 1.0)
             .accessibilityLabel(tf("a11y.habit.log.label.fmt", habit.name))
