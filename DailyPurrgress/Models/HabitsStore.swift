@@ -1,4 +1,4 @@
-//  HabitStore.swift ⌘
+//  HabitsStore.swift ⌘
 //  Created by @jonathaxs
 //  Swift Student Challenge 2026
 
@@ -43,20 +43,24 @@ final class HabitsStore: ObservableObject {
 
     // MARK: - Queries
 
+    private func trimmed(_ value: String) -> String {
+        value.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func normalizedName(_ name: String) -> String {
+        trimmed(name).lowercased()
+    }
+
+    private func isReadName(_ name: String) -> Bool {
+        normalizedName(name) == "read"
+    }
+
     var waterHabitID: UUID? {
         habits.first(where: { $0.isProtected })?.id
     }
 
     func habit(id: UUID) -> Habit? {
         habits.first(where: { $0.id == id })
-    }
-
-    private func normalizedName(_ name: String) -> String {
-        name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-    }
-
-    private func isReadName(_ name: String) -> Bool {
-        normalizedName(name) == "read"
     }
 
     private var didDeleteRead: Bool {
@@ -76,17 +80,17 @@ final class HabitsStore: ObservableObject {
     ) -> Bool {
         guard habits.count < Self.maxHabits else { return false }
 
-        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedName = trimmed(name)
         guard !trimmedName.isEmpty else { return false }
 
         if isReadName(trimmedName) {
             didDeleteRead = false
         }
 
-        let trimmedEmoji = emoji.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedEmoji = trimmed(emoji)
         guard !trimmedEmoji.isEmpty else { return false }
 
-        let trimmedUnit = unit.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedUnit = trimmed(unit)
         guard !trimmedUnit.isEmpty else { return false }
 
         guard goal > 0, step > 0, step <= goal else { return false }
@@ -129,34 +133,30 @@ final class HabitsStore: ObservableObject {
         saveNow()
     }
 
-    func logStep(for id: UUID) {
+    private func mutateHabit(id: UUID, _ mutation: (inout Habit) -> Void, saveImmediately: Bool) {
         guard let index = habits.firstIndex(where: { $0.id == id }) else { return }
 
         var updated = habits
-        updated[index].logStep()
+        mutation(&updated[index])
         habits = updated
 
-        saveNow()
+        if saveImmediately {
+            saveNow()
+        } else {
+            scheduleSave()
+        }
+    }
+
+    func logStep(for id: UUID) {
+        mutateHabit(id: id, { $0.logStep() }, saveImmediately: true)
     }
 
     func undoStep(for id: UUID) {
-        guard let index = habits.firstIndex(where: { $0.id == id }) else { return }
-
-        var updated = habits
-        updated[index].undoStep()
-        habits = updated
-
-        saveNow()
+        mutateHabit(id: id, { $0.undoStep() }, saveImmediately: true)
     }
 
     func resetHabit(id: UUID) {
-        guard let index = habits.firstIndex(where: { $0.id == id }) else { return }
-
-        var updated = habits
-        updated[index].reset()
-        habits = updated
-
-        saveNow()
+        mutateHabit(id: id, { $0.reset() }, saveImmediately: true)
     }
 
     func resetAll() {
@@ -171,20 +171,22 @@ final class HabitsStore: ObservableObject {
         saveNow()
     }
 
+    private func snappedValue(_ value: Int, goal: Int, step: Int) -> Int {
+        let safeGoal = max(goal, 0)
+        let safeStep = max(step, 1)
+
+        let clamped = min(max(value, 0), safeGoal)
+        let snapped = (safeGoal > 0)
+            ? (Int((Double(clamped) / Double(safeStep)).rounded()) * safeStep)
+            : 0
+
+        return min(max(snapped, 0), safeGoal)
+    }
+
     func setCurrent(_ newValue: Int, for id: UUID) {
-        guard let index = habits.firstIndex(where: { $0.id == id }) else { return }
-
-        let goal = max(habits[index].goal, 0)
-        let step = max(habits[index].step, 1)
-
-        let clamped = min(max(newValue, 0), goal)
-        let snapped = (goal > 0) ? (Int((Double(clamped) / Double(step)).rounded()) * step) : 0
-
-        var updated = habits
-        updated[index].current = min(max(snapped, 0), goal)
-        habits = updated
-
-        scheduleSave()
+        mutateHabit(id: id, { habit in
+            habit.current = snappedValue(newValue, goal: habit.goal, step: habit.step)
+        }, saveImmediately: false)
     }
 
     @discardableResult
@@ -198,38 +200,40 @@ final class HabitsStore: ObservableObject {
     ) -> Bool {
         guard let index = habits.firstIndex(where: { $0.id == id }) else { return false }
 
-        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedEmoji = emoji.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedUnit = unit.trimmingCharacters(in: .whitespacesAndNewlines)
+        var updated = habits
+        var habit = updated[index]
 
-        if isReadName(trimmedName) {
-            didDeleteRead = false
+        let trimmedName = trimmed(name)
+        let trimmedEmoji = trimmed(emoji)
+        let trimmedUnit = trimmed(unit)
+
+        // Water (protected) must keep its identity.
+        // We still allow editing the other fields.
+        if habit.isProtected == false {
+            if isReadName(trimmedName) {
+                didDeleteRead = false
+            }
+
+            guard !trimmedName.isEmpty,
+                  !trimmedEmoji.isEmpty
+            else { return false }
+
+            habit.name = trimmedName
+            habit.emoji = String(trimmedEmoji.prefix(1))
         }
 
-        guard !trimmedName.isEmpty,
-              !trimmedEmoji.isEmpty,
-              !trimmedUnit.isEmpty,
+        guard !trimmedUnit.isEmpty,
               goal > 0,
               step > 0,
               step <= goal
         else { return false }
 
-        var updated = habits
-
-        var habit = updated[index]
-        habit.name = trimmedName
-        habit.emoji = String(trimmedEmoji.prefix(1))
         habit.unit = trimmedUnit
         habit.goal = goal
         habit.step = step
 
-        // Clamp current to new goal and align to step
-        let clampedCurrent = min(max(habit.current, 0), goal)
-        let snapped = (goal > 0)
-            ? (Int((Double(clampedCurrent) / Double(step)).rounded()) * step)
-            : 0
-
-        habit.current = min(max(snapped, 0), goal)
+        // Clamp current to new goal and align to step.
+        habit.current = snappedValue(habit.current, goal: goal, step: step)
 
         updated[index] = habit
         habits = updated

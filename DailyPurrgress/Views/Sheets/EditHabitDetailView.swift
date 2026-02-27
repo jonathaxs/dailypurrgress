@@ -1,4 +1,4 @@
-// EditHabitDetailView.swift ⌘
+//  EditHabitDetailView.swift ⌘
 //  Created by @jonathaxs.
 //  Swift Student Challenge 2026
 
@@ -31,6 +31,10 @@ struct EditHabitDetailView: View {
     }
 
     // MARK: - Validation Helpers
+    private var isNameAndEmojiLocked: Bool {
+        habit.isProtected
+    }
+
     private var trimmedEmoji: String {
         emoji.trimmingCharacters(in: .whitespacesAndNewlines).prefix(1).description
     }
@@ -71,16 +75,20 @@ struct EditHabitDetailView: View {
     // MARK: - View
     var body: some View {
         Form {
-            Section {
-                TextField("", text: $emoji)
-            } header: {
-                Text(NSLocalizedString("editHabitDetail.field.emoji", comment: "Edit habit field label: Emoji"))
+            if !isNameAndEmojiLocked {
+                Section {
+                    TextField("", text: $emoji)
+                } header: {
+                    Text(NSLocalizedString("editHabitDetail.field.emoji", comment: "Edit habit field label: Emoji"))
+                }
             }
 
-            Section {
-                TextField("", text: $name)
-            } header: {
-                Text(NSLocalizedString("editHabitDetail.field.name", comment: "Edit habit field label: Name"))
+            if !isNameAndEmojiLocked {
+                Section {
+                    TextField("", text: $name)
+                } header: {
+                    Text(NSLocalizedString("editHabitDetail.field.name", comment: "Edit habit field label: Name"))
+                }
             }
 
             Section {
@@ -101,6 +109,16 @@ struct EditHabitDetailView: View {
                     .keyboardType(.numberPad)
             } header: {
                 Text(NSLocalizedString("editHabitDetail.field.logStep", comment: "Edit habit field label: Log step"))
+            } footer: {
+                if isNameAndEmojiLocked {
+                    Text(
+                        NSLocalizedString(
+                            "editHabitDetail.footer.waterNameEmojiLocked",
+                            comment: "Footer note shown only for the Water habit, explaining name/emoji are locked."
+                        )
+                    )
+                    .padding(.top, 10)
+                }
             }
         }
         .navigationTitle(habit.name)
@@ -110,8 +128,8 @@ struct EditHabitDetailView: View {
                 Button(NSLocalizedString("common.action.save", comment: "Save button title")) {
                     let didUpdate = habitsStore.updateHabit(
                         id: habit.id,
-                        name: trimmedName,
-                        emoji: trimmedEmoji,
+                        name: isNameAndEmojiLocked ? habit.name : trimmedName,
+                        emoji: isNameAndEmojiLocked ? habit.emoji : trimmedEmoji,
                         unit: trimmedUnit,
                         goal: safeGoal,
                         step: safeStep
