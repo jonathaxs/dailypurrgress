@@ -1,4 +1,6 @@
-// ProgressRingView.swift ⌘ @jonathaxs
+//  ProgressRingView.swift ⌘
+//  Created by @jonathaxs
+//  Swift Student Challenge 2026
 
 import SwiftUI
 
@@ -9,6 +11,10 @@ struct ProgressRingView: View {
     var lineWidth: CGFloat = 12
     var showsPercentage: Bool = true
 
+    /// Optional override used for small interaction moments (e.g. ring tap highlight).
+    /// When non-nil, it replaces the computed tier color.
+    var overrideRingColor: Color? = nil
+
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var clampedProgress: Double {
@@ -16,6 +22,10 @@ struct ProgressRingView: View {
     }
 
     private var ringColor: Color {
+        if let overrideRingColor {
+            return overrideRingColor
+        }
+
         switch clampedProgress {
         case ..<0.30:
             return .red
@@ -47,6 +57,7 @@ struct ProgressRingView: View {
                     .font(.title3)
                     .fontWeight(.semibold)
                     .monospacedDigit()
+                    .foregroundStyle(ringColor)
                     .contentTransition(.numericText())
                     .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: clampedProgress)
                     .accessibilityHidden(true)
@@ -73,7 +84,7 @@ struct ProgressRingView: View {
 #Preview {
     VStack(spacing: 24) {
         ProgressRingView(progress: 0.15)
-        ProgressRingView(progress: 0.65, size: 140, lineWidth: 14)
+        ProgressRingView(progress: 0.65, size: 140, lineWidth: 14, overrideRingColor: .purple)
         ProgressRingView(progress: 1.0, showsPercentage: false)
     }
     .padding()
