@@ -14,6 +14,7 @@ struct TodayMiniView: View {
     @State private var isPresentingInspirationalMessageEditor: Bool = false
     @State private var isPresentingCatTierEditor: Bool = false
     @State private var isRingPulsing: Bool = false
+    @State private var isRingHighlighted: Bool = false
 
     @AppStorage("DailyPurrgress.inspirationalMessageOverride")
     private var inspirationalMessageOverride: String = ""
@@ -42,9 +43,11 @@ struct TodayMiniView: View {
 
     private func triggerRingPulse() {
         isRingPulsing = true
+        isRingHighlighted = true
 
         DispatchQueue.main.asyncAfter(deadline: .now() + UI.ringPulseDuration) {
             isRingPulsing = false
+            isRingHighlighted = false
         }
     }
 
@@ -248,7 +251,8 @@ private extension TodayMiniView {
                 ProgressRingView(
                     progress: overallProgress,
                     size: UI.ringSize,
-                    lineWidth: UI.ringLineWidth
+                    lineWidth: UI.ringLineWidth,
+                    overrideRingColor: isRingHighlighted ? .purple : nil
                 )
                 .scaleEffect(isRingPulsing ? UI.ringPulseScale : 1.0)
                 .animation(.spring(response: 0.28, dampingFraction: 0.62), value: isRingPulsing)
