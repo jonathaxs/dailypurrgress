@@ -4,8 +4,9 @@
 # Xcode
 DerivedData/
 *.xcuserstate
-*.xcuserdata
-*.xcshareddata/WorkspaceSettings.xcsettings
+xcuserdata/
+*.xcuserdata/
+*.xcuserstate
 
 # Swift Package Manager (se aparecer no futuro)
 .build/
