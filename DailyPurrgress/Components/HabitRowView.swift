@@ -10,8 +10,6 @@ struct HabitRowView: View {
     let onUndoStep: () -> Void
     let onSetCurrent: (Int) -> Void
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
     @State private var undoHapticTick: Int = 0
     @State private var sliderHapticTick: Int = 0
 
@@ -21,19 +19,6 @@ struct HabitRowView: View {
 
     private func tf(_ key: String, _ args: CVarArg...) -> String {
         String(format: t(key), arguments: args)
-    }
-
-
-    init(
-        habit: Habit,
-        onLogStep: @escaping () -> Void,
-        onUndoStep: @escaping () -> Void,
-        onSetCurrent: @escaping (Int) -> Void
-    ) {
-        self.habit = habit
-        self.onLogStep = onLogStep
-        self.onUndoStep = onUndoStep
-        self.onSetCurrent = onSetCurrent
     }
 
     var body: some View {

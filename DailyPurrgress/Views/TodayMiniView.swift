@@ -91,7 +91,7 @@ private extension TodayMiniView {
         static let undoAnimationResponse: TimeInterval = 0.30
         static let undoAnimationDamping: Double = 0.78
         static let sliderSetAnimationDuration: TimeInterval = 0.12
-        static let ringPulseScale: Double = 1.20
+        static let pressScaleAmount: Double = 1.20
         static let wideThreshold: CGFloat = 700
         static let wideHStackSpacing: CGFloat = 24
         static let portraitHabitsGap: CGFloat = 15
@@ -245,8 +245,8 @@ private extension TodayMiniView {
                 )
             }
             .buttonStyle(.plain)
-            .pressScaleEffect()
-            // Keep the ring purple while the user is pressing, matching the scale effect.
+            .scaleEffect(isRingPressed ? UI.pressScaleAmount : 1.0)
+            .animation(.spring(response: 0.25, dampingFraction: 0.50), value: isRingPressed)
             .simultaneousGesture(
                 DragGesture(minimumDistance: 0)
                     .updating($isRingPressed) { _, state, _ in
@@ -300,12 +300,16 @@ private extension TodayMiniView {
                 isPresentingEditHabit = true
             }
             .buttonStyle(.bordered)
+            .buttonBorderShape(.roundedRectangle)
+            .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
             .pressScaleEffect()
 
             Button(NSLocalizedString("common.action.resetAll", comment: "")) {
                 isConfirmingResetAll = true
             }
             .buttonStyle(.bordered)
+            .buttonBorderShape(.roundedRectangle)
+            .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
             .tint(.red)
             .pressScaleEffect()
         }
@@ -358,7 +362,7 @@ private struct PressScaleEffect: ViewModifier {
     @GestureState private var isPressed: Bool = false
 
     func body(content: Content) -> some View {
-        let scale: CGFloat = reduceMotion ? 1.0 : (isPressed ? TodayMiniView.UI.ringPulseScale : 1.0)
+        let scale: CGFloat = reduceMotion ? 1.0 : (isPressed ? TodayMiniView.UI.pressScaleAmount : 1.0)
 
         content
             .scaleEffect(scale)

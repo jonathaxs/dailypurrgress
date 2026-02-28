@@ -117,7 +117,8 @@ struct EditHabitDetailView: View {
                             comment: "Footer note shown only for the Water habit, explaining name/emoji are locked."
                         )
                     )
-                    .padding(.top, 10)
+                    .font(.footnote)
+                    .padding(.top, 4)
                 }
             }
         }

@@ -55,13 +55,12 @@ struct EditHabitSheetView: View {
                                 )
                             )
                             .font(.footnote)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.red)
                             .padding(.top, 5)
                         }
 
                         Text(NSLocalizedString("editHabitsSheet.footer.waterProtected", comment: "Footer note explaining that Water cannot be deleted"))
                             .font(.footnote)
-                            .foregroundStyle(.secondary)
                             .padding(.top, 8)
                     }
                 }
@@ -145,14 +144,12 @@ private extension EditHabitSheetView {
 
                 Text("\(habit.current) / \(habit.goal) \(habit.unit)")
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
             }
 
             Spacer()
 
             Text(NSLocalizedString("editHabitsSheet.row.editValues", comment: "Hint text shown on habit rows to indicate tapping opens the edit screen"))
                 .font(.footnote)
-                .foregroundStyle(.secondary)
         }
         .padding(.vertical, 4)
     }
