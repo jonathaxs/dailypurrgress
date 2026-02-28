@@ -131,6 +131,7 @@ private extension HabitRowView {
                 Text(t("common.action.undo"))
             }
             .buttonStyle(HabitRowButtonStyle(variant: .bordered))
+            .pressScale(pressedScale: 1.15, response: 0.25, dampingFraction: 0.40)
             .disabled(habit.current == 0)
             .accessibilityLabel(t("a11y.habit.undo.label"))
             .accessibilityHint(t("a11y.habit.undo.hint"))
@@ -143,6 +144,7 @@ private extension HabitRowView {
                     .minimumScaleFactor(0.8)
             }
             .buttonStyle(HabitRowButtonStyle(variant: .prominent))
+            .pressScale(pressedScale: 1.15, response: 0.25, dampingFraction: 0.40)
             .disabled(habit.isComplete)
             .opacity(habit.isComplete ? 0.6 : 1.0)
             .accessibilityLabel(tf("a11y.habit.log.label.fmt", habit.name))
@@ -197,25 +199,52 @@ private extension HabitRowView {
 
 // MARK: - Button Style
 
-/// A reusable "Apple-like" press interaction for buttons.
-/// Keeps the view slightly larger while the finger is down (like iOS 26 toolbar buttons).
-struct PressScaleButtonStyle: ButtonStyle {
+/// Gesture-driven press scale that works well inside `ScrollView`.
+/// We avoid relying on `configuration.isPressed` because scroll views can delay the pressed state
+/// while deciding between a tap and a drag.
+private struct PressScaleEffect: ViewModifier {
     var pressedScale: CGFloat = 1.15
     var response: Double = 0.25
     var dampingFraction: Double = 0.40
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.isEnabled) private var isEnabled
 
-    func makeBody(configuration: Configuration) -> some View {
-        let isPressed = configuration.isPressed
-        let scale: CGFloat = reduceMotion ? 1.0 : (isPressed ? pressedScale : 1.0)
+    @GestureState private var isPressed: Bool = false
 
-        return configuration.label
+    func body(content: Content) -> some View {
+        let scale: CGFloat = (reduceMotion || !isEnabled) ? 1.0 : (isPressed ? pressedScale : 1.0)
+
+        return content
             .scaleEffect(scale)
             .animation(
                 reduceMotion ? nil : .spring(response: response, dampingFraction: dampingFraction),
                 value: isPressed
             )
+            // Using a 0-distance drag lets us detect touch-down immediately.
+            // `simultaneousGesture` keeps scrolling behavior intact.
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0)
+                    .updating($isPressed) { _, state, _ in
+                        state = true
+                    }
+            )
+    }
+}
+
+private extension View {
+    func pressScale(
+        pressedScale: CGFloat = 1.15,
+        response: Double = 0.25,
+        dampingFraction: Double = 0.40
+    ) -> some View {
+        modifier(
+            PressScaleEffect(
+                pressedScale: pressedScale,
+                response: response,
+                dampingFraction: dampingFraction
+            )
+        )
     }
 }
 
@@ -228,16 +257,9 @@ private struct HabitRowButtonStyle: ButtonStyle {
     let variant: Variant
 
     @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    // Press scale tuning (matches the Log/Undo feel).
-    private let pressedScale: CGFloat = 1.20
-    private let pressResponse: Double = 0.20
-    private let pressDamping: Double = 0.50
 
     func makeBody(configuration: Configuration) -> some View {
         let isPressed = configuration.isPressed
-        let scale: CGFloat = reduceMotion ? 1.0 : (isPressed ? pressedScale : 1.0)
 
         return configuration.label
             .frame(maxWidth: .infinity, minHeight: 25)
@@ -252,11 +274,6 @@ private struct HabitRowButtonStyle: ButtonStyle {
                 }
             }
             .foregroundStyle(foreground)
-            .scaleEffect(scale)
-            .animation(
-                reduceMotion ? nil : .spring(response: pressResponse, dampingFraction: pressDamping),
-                value: isPressed
-            )
             .opacity(isEnabled ? 1.0 : 0.6)
     }
 
