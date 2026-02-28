@@ -1,6 +1,7 @@
 //  DailyPurrgressApp.swift ⌘
 //  Created by @jonathaxs.
 //  Swift Student Challenge 2026
+//  https://github.com/jonathaxs/dailypurrgress
 
 import SwiftUI
 import CoreHaptics
