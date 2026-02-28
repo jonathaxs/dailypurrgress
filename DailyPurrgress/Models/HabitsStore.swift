@@ -51,6 +51,10 @@ final class HabitsStore: ObservableObject {
         trimmed(name).lowercased()
     }
 
+    private func normalizedEmoji(_ emoji: String) -> String {
+        String(trimmed(emoji).prefix(1))
+    }
+
     private func isReadName(_ name: String) -> Bool {
         normalizedName(name) == "read"
     }
@@ -83,12 +87,16 @@ final class HabitsStore: ObservableObject {
         let trimmedName = trimmed(name)
         guard !trimmedName.isEmpty else { return false }
 
+        let candidateName = normalizedName(trimmedName)
+        guard habits.contains(where: { normalizedName($0.name) == candidateName }) == false else { return false }
+
         if isReadName(trimmedName) {
             didDeleteRead = false
         }
 
-        let trimmedEmoji = trimmed(emoji)
-        guard !trimmedEmoji.isEmpty else { return false }
+        let candidateEmoji = normalizedEmoji(emoji)
+        guard candidateEmoji.isEmpty == false else { return false }
+        guard habits.contains(where: { normalizedEmoji($0.emoji) == candidateEmoji }) == false else { return false }
 
         let trimmedUnit = trimmed(unit)
         guard !trimmedUnit.isEmpty else { return false }
@@ -97,7 +105,7 @@ final class HabitsStore: ObservableObject {
 
         let newHabit = Habit(
             name: trimmedName,
-            emoji: trimmedEmoji,
+            emoji: candidateEmoji,
             unit: trimmedUnit,
             goal: goal,
             step: step,
