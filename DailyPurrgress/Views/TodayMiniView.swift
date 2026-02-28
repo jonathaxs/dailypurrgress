@@ -230,6 +230,8 @@ private extension TodayMiniView {
                 CatMoodView(tier: overallTier)
             }
             .buttonStyle(.plain)
+            // Lock this copy to the standard Dynamic Type size so Accessibility text sizes
+            .dynamicTypeSize(.medium)
             .pressScaleEffect()
             .accessibilityLabel(Text(NSLocalizedString("a11y.catMood.label", comment: "")))
             .accessibilityHint(Text(NSLocalizedString("a11y.catMood.hint", comment: "")))
@@ -343,6 +345,9 @@ private extension TodayMiniView {
             isPresentingInspirationalMessageEditor = true
         } label: {
             Text(inspirationalMessageText)
+                .font(.body)
+                // Lock this copy to the standard Dynamic Type size so Accessibility text sizes
+                .dynamicTypeSize(.medium)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
