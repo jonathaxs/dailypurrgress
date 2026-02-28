@@ -46,11 +46,31 @@ struct AddHabitSheetView: View {
         String(emoji.trimmingCharacters(in: .whitespacesAndNewlines).prefix(1))
     }
 
+    private var normalizedName: String {
+        trimmedName.lowercased()
+    }
+
+    private var isDuplicateName: Bool {
+        guard !normalizedName.isEmpty else { return false }
+        return habitsStore.habits.contains {
+            $0.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == normalizedName
+        }
+    }
+
+    private var isDuplicateEmoji: Bool {
+        guard !trimmedEmoji.isEmpty else { return false }
+        return habitsStore.habits.contains {
+            String($0.emoji.trimmingCharacters(in: .whitespacesAndNewlines).prefix(1)) == trimmedEmoji
+        }
+    }
+
     private var isValid: Bool {
         guard canAddMore else { return false }
         guard !trimmedName.isEmpty else { return false }
         guard !trimmedUnit.isEmpty else { return false }
         guard !trimmedEmoji.isEmpty else { return false }
+        guard !isDuplicateName else { return false }
+        guard !isDuplicateEmoji else { return false }
         guard let goal, let step else { return false }
         guard goal > 0, step > 0, step <= goal else { return false }
         return true
@@ -71,6 +91,15 @@ struct AddHabitSheetView: View {
         NavigationStack {
             Form {
                 Section(NSLocalizedString("addHabitSheet.section.emoji.title", comment: "Add habit section title: emoji")) {
+                    if isDuplicateEmoji {
+                        Text(NSLocalizedString(
+                            "addHabitSheet.validation.duplicateEmoji",
+                            comment: "Shown when the chosen emoji is already used by another habit"
+                        ))
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                    }
+
                     TextField(
                         NSLocalizedString("addHabitSheet.section.emoji.placeholder", comment: "Add habit emoji placeholder"),
                         text: $emoji
@@ -80,6 +109,15 @@ struct AddHabitSheetView: View {
                 }
 
                 Section(NSLocalizedString("addHabitSheet.section.name.title", comment: "Add habit section title: name")) {
+                    if isDuplicateName {
+                        Text(NSLocalizedString(
+                            "addHabitSheet.validation.duplicateName",
+                            comment: "Shown when the chosen habit name is already used by another habit"
+                        ))
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                    }
+
                     TextField(
                         NSLocalizedString("addHabitSheet.section.name.placeholder", comment: "Add habit name placeholder"),
                         text: $name
