@@ -320,6 +320,28 @@
         }
       }
     },
+    "addHabitSheet.validation.duplicateEmoji" : {
+      "comment" : "Shown when the chosen emoji is already used by another habit",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This emoji is already used by another habit."
+          }
+        }
+      }
+    },
+    "addHabitSheet.validation.duplicateName" : {
+      "comment" : "Shown when the chosen habit name is already used by another habit",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This habit name is already in use."
+          }
+        }
+      }
+    },
     "catTier.complete.emoji" : {
       "comment" : "Lion emoji complete tier",
       "extractionState" : "stale",
@@ -968,9 +990,6 @@
           }
         }
       }
-    },
-    "Key" : {
-      "extractionState" : "manual"
     },
     "status.goalReached" : {
       "comment" : "Status",
