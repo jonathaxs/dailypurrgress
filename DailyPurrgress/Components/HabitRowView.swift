@@ -118,9 +118,8 @@ private extension HabitRowView {
             .buttonStyle(HabitRowButtonStyle(variant: .bordered))
             .pressScale(pressedScale: 1.15, response: 0.25, dampingFraction: 0.40)
             .disabled(habit.current == 0)
-            .accessibilityLabel(t("a11y.habit.undo.label"))
-            .accessibilityHint(t("a11y.habit.undo.hint"))
-
+            .accessibilityLabel(tf("a11y.habit.undo.label.fmt", habit.name))
+            .accessibilityHint(tf("a11y.habit.undo.hint.fmt", habit.name))
             Button {
                 onLogStep()
             } label: {
@@ -147,7 +146,7 @@ private extension HabitRowView {
     }
 
     var sliderAccessibilityValue: String {
-        tf("a11y.unitValue.fmt", habit.current, habit.unit)
+        tf("a11y.unitValue.fmt", habit.remaining, habit.unit)
     }
 
     var clampedProgress: Double {

@@ -23,6 +23,14 @@ struct TodayMiniView: View {
 
     // Increment to trigger a double haptic when a reset is confirmed.
     @State private var resetHapticTick: Int = 0
+    
+    // VoiceOver - Reset all announcement
+    @State private var a11yAnnouncement: String = ""
+    @AccessibilityFocusState private var a11yFocus: A11yFocus?
+
+    private enum A11yFocus: Hashable {
+        case announcement
+    }
 
     // MARK: - Derived State
     private var overallProgress: Double {
@@ -48,6 +56,17 @@ struct TodayMiniView: View {
             }
             .sensoryFeedback(.impact, trigger: logHapticTick)
             .sensoryFeedback(.warning, trigger: resetHapticTick)
+            .overlay(alignment: .top) {
+                if !a11yAnnouncement.isEmpty {
+                    Text(a11yAnnouncement)
+                        .font(.body)
+                        .opacity(0.01) // invisible, but accessible(to VoiceOver)
+                        .accessibilityHidden(false)
+                        .accessibilityFocused($a11yFocus, equals: .announcement)
+                        .accessibilitySortPriority(10_000)
+                        .accessibilityAddTraits(.isStaticText)
+                }
+            }
             .sheet(isPresented: $isPresentingEditHabit) {
                 EditHabitSheetView()
                     .environmentObject(habitsStore)
@@ -233,7 +252,10 @@ private extension TodayMiniView {
             // Lock this copy to the standard Dynamic Type size so Accessibility text sizes
             .dynamicTypeSize(.medium)
             .pressScaleEffect()
-            .accessibilityLabel(Text(NSLocalizedString("a11y.catMood.label", comment: "")))
+            .accessibilityLabel(
+                Text("\(NSLocalizedString("a11y.catMood.label", comment: "")), \(overallTier.title)")
+            )
+            .accessibilityValue(Text(overallTier.subtitle))
             .accessibilityHint(Text(NSLocalizedString("a11y.catMood.hint", comment: "")))
 
             Button {
@@ -301,6 +323,7 @@ private extension TodayMiniView {
             Button(NSLocalizedString("common.action.editHabits", comment: "")) {
                 isPresentingEditHabit = true
             }
+            .accessibilityHint(Text(NSLocalizedString("a11y.editHabits.hint", comment: "")))
             .buttonStyle(.bordered)
             .buttonBorderShape(.roundedRectangle)
             .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
@@ -309,6 +332,7 @@ private extension TodayMiniView {
             Button(NSLocalizedString("common.action.resetAll", comment: "")) {
                 isConfirmingResetAll = true
             }
+            .accessibilityHint(Text(NSLocalizedString("a11y.resetAll.hint", comment: "")))
             .buttonStyle(.bordered)
             .buttonBorderShape(.roundedRectangle)
             .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
@@ -323,7 +347,7 @@ private extension TodayMiniView {
             isPresented: $isConfirmingResetAll,
             titleVisibility: .visible
         ) {
-            Button(NSLocalizedString("common.action.resetAll", comment: ""), role: .destructive) {
+            Button(NSLocalizedString("common.action.resetAll.dialog", comment: ""), role: .destructive) {
                 Task { @MainActor in
                     resetHapticTick += 1
                     try? await Task.sleep(nanoseconds: UI.resetDoubleHapticDelayNanos)
@@ -332,6 +356,22 @@ private extension TodayMiniView {
 
                 withAnimation(.easeInOut(duration: UI.resetAnimationDuration)) {
                     habitsStore.resetAll()
+                }
+                Task { @MainActor in
+                    a11yAnnouncement = NSLocalizedString(
+                        "a11y.resetAll.announcement",
+                        comment: "VoiceOver announcement spoken after all habits are reset."
+                    )
+                    a11yFocus = .announcement
+
+                    // There's time for the dialogue to conclude and for the focus to "stick" to the text.
+                    try? await Task.sleep(nanoseconds: 200_000_000)
+                    a11yFocus = .announcement
+
+                    // Clear the ad after a while.
+                    try? await Task.sleep(nanoseconds: 1_500_000_000)
+                    a11yAnnouncement = ""
+                    a11yFocus = nil
                 }
             }
             Button(NSLocalizedString("common.action.cancel", comment: ""), role: .cancel) {}
@@ -355,7 +395,9 @@ private extension TodayMiniView {
         }
         .controlSize(.large)
         .pressScaleEffect()
-        .accessibilityLabel(Text(NSLocalizedString("a11y.inspirationalMessage.label", comment: "Accessibility label for the inspirational message button")))
+        .accessibilityLabel(
+            Text(
+                "\(NSLocalizedString("a11y.inspirationalMessage.label", comment: "Accessibility label for the inspirational message button")), \(inspirationalMessageText)"))
         .accessibilityHint(Text(NSLocalizedString("a11y.inspirationalMessage.hint", comment: "Accessibility hint for editing the inspirational message")))
     }
 }
