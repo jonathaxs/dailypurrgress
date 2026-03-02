@@ -31,6 +31,6 @@ The app was primarily developed and refined as a full **Xcode project**, then ca
 
 ### Screenshots
 
-<img align="left" src="git/screenshots/IMG_3356.PNG" width="150">
-<img align="left" src="git/screenshots/IMG_3359.PNG" width="150">
-<img src="git/screenshots/IMG_3358.PNG" width="400">
+<img align="left" src="git/screenshots/IMG_3356.PNG" width="133">
+<img align="left" src="git/screenshots/IMG_3359.PNG" width="133">
+<img align="left" src="git/screenshots/IMG_3358.PNG" width="333">
