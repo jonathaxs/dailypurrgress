@@ -1,6 +1,11 @@
 # DailyPurrgress
 
+<p align="center">
+  <img src="DailyPurrgressApp/App/Resources/Assets.xcassets/AppIcon.appiconset/catpurrgressdark.png" width="160">
+</p>
+
 *Daily habits don’t have to be loud.*
+
 *Sometimes, they just* ***purr***.
 
 **DailyPurrgress** is a minimalist habit-tracking app designed to make daily progress feel calm, visual, and rewarding through a cat-themed progression system.
