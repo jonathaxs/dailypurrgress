@@ -15,3 +15,7 @@ xcuserdata/
 
 # Logs
 *.log
+
+# Ignore SwiftPM local metadata inside any .swiftpm project
+**/*.swiftpm/.swiftpm/
+**/*.swiftpm/.build/
