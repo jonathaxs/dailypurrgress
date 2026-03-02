@@ -1,21 +1,13 @@
-# 🐆 DailyPurrgress
+# DailyPurrgress
 
-<table>
-<tr>
-<td>
+<img align="left" src="git/icons/catpurrgresslightrounded.png" width="100">
+<img align="left" src="git/icons/catpurrgressdarkrounded.png" width="100">
+<br>
 
-*Daily habits don’t have to be loud.*  
+*Daily habits don’t have to be loud.*
 
 *Sometimes, they just* ***purr***.
-
-</td>
-<td align="right">
-
-<img src="DailyPurrgressApp/App/Resources/Assets.xcassets/AppIcon.appiconset/catpurrgresslight.png" width="150" style="border-radius: 22px;">
-
-</td>
-</tr>
-</table>
+<br><br>
 
 ---
 
