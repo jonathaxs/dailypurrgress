@@ -1,9 +1,7 @@
 # DailyPurrgress
 
-Daily habits don’t have to be loud.  
-Sometimes, they just ***purr***.
-
----
+*Daily habits don’t have to be loud.*
+*Sometimes, they just* ***purr***.
 
 **DailyPurrgress** is a minimalist habit-tracking app designed to make daily progress feel calm, visual, and rewarding through a cat-themed progression system.
 
