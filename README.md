@@ -1,7 +1,7 @@
 # DailyPurrgress
 
-<img align="left" src="git/appicons/catpurrgresslightrounded.png" width="100">
-<img align="left" src="git/appicons/catpurrgressdarkrounded.png" width="100">
+<img align="right" src="git/appicons/catpurrgresslightrounded.png" width="100">
+<img align="right" src="git/appicons/catpurrgressdarkrounded.png" width="100">
 <br>
 
 *Daily habits don’t have to be loud.*
