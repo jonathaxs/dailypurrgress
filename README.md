@@ -26,3 +26,9 @@ The app was primarily developed and refined as a full **Xcode project**, then ca
 
 - `DailyPurrgressApp/` → Original Xcode development version  
 - `DailyPurrgressPlaygrounds/` → Swift Playgrounds submission version
+
+---
+
+<img src="git/screenshots/IMG_3358.png" width="100">
+<img align="left" src="git/screenshots/IMG_3356.png" width="100">
+<img src="git/screenshots/IMG_3359.png" width="100">
