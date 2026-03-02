@@ -2,5 +2,5 @@
 
 This folder contains the Swift Playgrounds version submitted to the Swift Student Challenge.
 
-Open:
+Open the package:
 `App/DailyPurrgress.swiftpm`
