@@ -1,0 +1,287 @@
+/* An accessibility label that combines a description of the button's function with its current state, formatted to include the inspirational message text. The argument is the string “a11y.inspirationalMessage.label”. */
+"%@, %@" = "%1$@, %2$@";
+
+/* A label showing the current count of a habit compared to its goal count, along with the unit of measurement. The first argument is the current count of the habit. The second argument is the goal count of the habit. The third argument is the unit of measurement for the habit. */
+"%lld / %lld %@" = "%1$lld / %2$lld %3$@";
+
+/* A text label displaying the percentage of the progress ring that is filled. */
+"%lld%%" = "%lld%%";
+
+/* A hint that describes the functionality of the cat mood button in the Today mini view. */
+"a11y.catMood.hint" = "Double-tap to edit tier values";
+
+/* An accessibility label for the cat mood view. */
+"a11y.catMood.label" = "Inspirational tier";
+
+/* A voice-over hint for the \"Edit Habits\" button in the \"Today\" mini view. */
+"a11y.editHabits.hint" = "Edit, Add or Remove habits.";
+
+/* (manual) */
+"a11y.habit.log.hint.fmt" = "Adds more to your %@ goal";
+
+/* Accessibility - Log */
+"a11y.habit.log.label.fmt" = "Log %@";
+
+/* (manual) */
+"a11y.habit.reset.hint" = "Clears your progress for today";
+
+/* Accessibility - Reset */
+"a11y.habit.reset.label" = "Reset today";
+
+/* Accessibility - Remaining */
+"a11y.habit.slider.hint" = "Left to reach your daily goal";
+
+/* Accessibility - Remaining */
+"a11y.habit.slider.label" = "Remaining";
+
+/* Accessibility hint for the undo button. Uses one %@ placeholder for the habit name. */
+"a11y.habit.undo.hint.fmt" = "Removes the last logged step from %@.";
+
+/* Accessibility label for the undo button. Uses one %@ placeholder for the habit name. */
+"a11y.habit.undo.label.fmt" = "Undo step for %@";
+
+/* Accessibility hint for editing the inspirational message */
+"a11y.inspirationalMessage.hint" = "Double-tap to edit inspirational message";
+
+/* Accessibility label for the inspirational message button */
+"a11y.inspirationalMessage.label" = "Inspirational message";
+
+/* Accessibility hint describing the progress ring */
+"a11y.progressRing.hint" = "A ring that shows your progress. It expands when pressed.";
+
+/* Accessibility label for overall daily progress ring */
+"a11y.progressRing.label" = "Daily progress";
+
+/* Accessibility value describing percent completed */
+"a11y.progressRing.percentCompleted.fmt" = "%d percent completed";
+
+/* Accessibility announcement read by VoiceOver after all habits are reset via the Reset All confirmation dialog. */
+"a11y.resetAll.announcement" = "All habits have been reset.";
+
+/* An accessibility hint for the reset all button. */
+"a11y.resetAll.hint" = "Alert to reset all habits.";
+
+/* Accessibility - Units */
+"a11y.unitValue.fmt" = "%d %@";
+
+/* Shown when the user reaches the max number of habits. Uses one %d placeholder. */
+"addHabitSheet.limitReached.fmt" = "Limit reached (max %d habits).";
+
+/* Add habit emoji placeholder */
+"addHabitSheet.section.emoji.placeholder" = "example: 🧘";
+
+/* Add habit section title: emoji */
+"addHabitSheet.section.emoji.title" = "Habit emoji";
+
+/* Add habit target placeholder */
+"addHabitSheet.section.goal.placeholder" = "example: 3";
+
+/* Add habit section title: target */
+"addHabitSheet.section.goal.title" = "Measure target";
+
+/* Add habit name placeholder */
+"addHabitSheet.section.name.placeholder" = "example: Meditation";
+
+/* Add habit section title: name */
+"addHabitSheet.section.name.title" = "Habit name";
+
+/* Add habit log step placeholder */
+"addHabitSheet.section.step.placeholder" = "example: 1";
+
+/* Add habit section title: log step */
+"addHabitSheet.section.step.title" = "Log step";
+
+/* Add habit measure placeholder */
+"addHabitSheet.section.unit.placeholder" = "example: rest";
+
+/* Add habit section title: measure */
+"addHabitSheet.section.unit.title" = "Habit measure";
+
+/* Add Habit navigation title */
+"addHabitSheet.title" = "Add habit";
+
+/* Shown when the chosen emoji is already used by another habit */
+"addHabitSheet.validation.duplicateEmoji" = "This emoji is already used by another habit.";
+
+/* Shown when the chosen habit name is already used by another habit */
+"addHabitSheet.validation.duplicateName" = "This habit name is already in use.";
+
+/* Lion emoji complete tier */
+"catTier.complete.emoji" = "🦁";
+
+/* (stale) */
+"catTier.complete.subtitle" = "One more day of progress.";
+
+/* (stale) */
+"catTier.complete.title" = "Daily goal complete.";
+
+/* Jaguar emoji high tier */
+"catTier.high.emoji" = "🐆";
+
+/* (stale) */
+"catTier.high.subtitle" = "Results come from repetition.";
+
+/* (stale) */
+"catTier.high.title" = "Stay consistent.";
+
+/* Small cat emoji low tier */
+"catTier.low.emoji" = "🐱";
+
+/* (stale) */
+"catTier.low.subtitle" = "Every small step moves you forward.";
+
+/* (stale) */
+"catTier.low.title" = "Let’s begin.";
+
+/* Cat emoji medium tier */
+"catTier.medium.emoji" = "🐈‍⬛";
+
+/* (stale) */
+"catTier.medium.subtitle" = "Momentum is building.";
+
+/* (stale) */
+"catTier.medium.title" = "You’ve started.";
+
+/* Label for the complete tier fields. */
+"catTierSheet.complete.label" = "Complete tier";
+
+/* Footer hint explaining that empty text restores defaults. */
+"catTierSheet.copyHint" = "Leave blank to use the default copy.";
+
+/* Field label for the tier emoji. */
+"catTierSheet.emoji.label" = "Emoji";
+
+/* Label for the high tier fields. */
+"catTierSheet.high.label" = "High tier";
+
+/* Label for the low tier fields. */
+"catTierSheet.low.label" = "Low tier";
+
+/* Label for the medium tier fields. */
+"catTierSheet.medium.label" = "Medium tier";
+
+/* Button title to clear all custom values and restore defaults. */
+"catTierSheet.resetToDefault" = "Reset to default";
+
+/* Footer hint explaining emoji input expectations. */
+"catTierSheet.saveHint" = "Use one emoji per tier.";
+
+/* Section header for customization fields. */
+"catTierSheet.section.title" = "Customize";
+
+/* Field label for the tier subtitle. */
+"catTierSheet.subtitleField.label" = "Subtitle";
+
+/* Navigation title for the Cat Tier customization sheet. */
+"catTierSheet.title" = "Edit tier values";
+
+/* Field label for the tier title. */
+"catTierSheet.titleField.label" = "Title";
+
+/* Add button title */
+"common.action.add" = "Add";
+
+/* Back button title */
+"common.action.back" = "Back";
+
+/* Cancel button title */
+"common.action.cancel" = "Cancel";
+
+/* Done button title */
+"common.action.done" = "Done";
+
+/* Edit button title */
+"common.action.edit" = "Edit";
+
+/* (no comment) */
+"common.action.editHabits" = "Edit habits";
+
+/* (manual) */
+"common.action.log" = "Log";
+
+/* Actions */
+"common.action.reset" = "Reset";
+
+/* Reset all button on main TodayMiniView. */
+"common.action.resetAll" = "Reset all";
+
+/* Button on confirmationDialog that reset all. */
+"common.action.resetAll.dialog" = "Reset all now";
+
+/* Save button title */
+"common.action.save" = "Save";
+
+/* (manual) */
+"common.action.undo" = "Undo";
+
+/* (manual) */
+"common.confirm.reset.message.fmt" = "This will clear your %@ progress for today.";
+
+/* Confirmation dialogs */
+"common.confirm.reset.title.fmt" = "Reset %@ progress?";
+
+/* (no comment) */
+"common.confirm.resetAll.message" = "This will reset the progress for all habits.";
+
+/* (no comment) */
+"common.confirm.resetAll.title" = "Reset all habits?";
+
+/* Edit habit field label: Emoji */
+"editHabitDetail.field.emoji" = "Emoji";
+
+/* Edit habit field label: Log step */
+"editHabitDetail.field.logStep" = "Log step";
+
+/* Edit habit field label: Measure */
+"editHabitDetail.field.measure" = "Measure";
+
+/* Edit habit field label: Name */
+"editHabitDetail.field.name" = "Name";
+
+/* Edit habit field label: Target */
+"editHabitDetail.field.target" = "Target";
+
+/* Footer note shown only for the Water habit, explaining name/emoji are locked. */
+"editHabitDetail.footer.waterNameEmojiLocked" = "Water is your default habit. Its name can’t be changed.";
+
+/* Footer message shown when the user has reached the maximum number of habits */
+"editHabitsSheet.footer.limitReached" = "You’ve reached the maximum number of habits.\nFocus on these for now.";
+
+/* Footer note explaining that Water cannot be deleted */
+"editHabitsSheet.footer.waterProtected" = "Water is your default habit and can’t be deleted.";
+
+/* Hint text shown on habit rows to indicate tapping opens the edit screen */
+"editHabitsSheet.row.editValues" = "Edit values";
+
+/* Header title for habits list section */
+"editHabitsSheet.section.title" = "Your habits";
+
+/* (manual) */
+"habit.logStep.fmt" = "Log +%d %@";
+
+/* (manual) */
+"habit.progressLine.fmt" = "%d / %d %@";
+
+/* Habit progress strings */
+"habit.remaining.fmt" = "%d %@ to go";
+
+/* Label for the text editor field where the user writes their custom inspirational message. */
+"inspirationalMessageSheet.field.label" = "Your inspirational message";
+
+/* Helper text shown when the inspirational message field is empty, explaining that the default message will be used. */
+"inspirationalMessageSheet.field.placeholder" = "Leave empty to use the default message.";
+
+/* Button title that resets the inspirational message to the built-in default. */
+"inspirationalMessageSheet.resetToDefault" = "Reset to default message";
+
+/* Button title that resets the inspirational message to the built-in default in the confirmationDialog. */
+"inspirationalMessageSheet.resetToDefaultDialogButton" = "Reset";
+
+/* Navigation title for the sheet that allows the user to edit their inspirational message shown on the main screen. */
+"inspirationalMessageSheet.title" = "Edit message";
+
+/* Status */
+"status.goalReached" = "Goal reached.";
+
+/* Inpirational Message default */
+"todayMini.inspirationalMessage.default" = "Daily habits don’t have to be loud.\nSometimes, they just purr.";
