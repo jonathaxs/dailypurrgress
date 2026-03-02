@@ -29,6 +29,8 @@ The app was primarily developed and refined as a full **Xcode project**, then ca
 
 ---
 
+### Screenshots
+
+<img align="left" src="git/screenshots/IMG_3356.PNG" width="180">
+<img align="left" src="git/screenshots/IMG_3359.PNG" width="180">
 <img src="git/screenshots/IMG_3358.PNG" width="500">
-<img align="left" src="git/screenshots/IMG_3356.PNG" width="200">
-<img src="git/screenshots/IMG_3359.PNG" width="200">
