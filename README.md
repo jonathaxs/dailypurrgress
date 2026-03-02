@@ -1,13 +1,12 @@
 # DailyPurrgress
 
-<img align="right" src="git/appicons/catpurrgresslightrounded.png" width="100">
-<img align="right" src="git/appicons/catpurrgressdarkrounded.png" width="100">
-<br>
+<img align="left" src="git/appicons/catpurrgresslightrounded.png" width="100">
+<img src="git/appicons/catpurrgressdarkrounded.png" width="100">
 
 *Daily habits don’t have to be loud.*
 
 *Sometimes, they just* ***purr***.
-<br><br>
+<br>
 
 ---
 
