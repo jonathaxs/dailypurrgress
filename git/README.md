@@ -7,5 +7,6 @@ These files are not part of the app's runtime or build process.
 ## Contents
 
 - `appicons/` → Rounded app icons used in the main README
+- `screenshots/` → App screenshots used in the main README
 
 This directory exists to keep repository-related assets separate from the actual application source code.
