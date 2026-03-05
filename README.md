@@ -1,7 +1,10 @@
-# DailyPurrgress
+![SwiftUI](https://img.shields.io/badge/SwiftUI-0C7CFF?style=for-the-badge&logo=swift&logoColor=white)
+![Swift Playgrounds](https://img.shields.io/badge/Swift_Playgrounds-FA7343?style=for-the-badge&logo=swift&logoColor=white)
 
 <img align="left" src="git/appicons/catpurrgresslightrounded.png" width="100">
 <img src="git/appicons/catpurrgressdarkrounded.png" width="100">
+
+# DailyPurrgress
 
 *Daily habits don’t have to be loud.*
 
