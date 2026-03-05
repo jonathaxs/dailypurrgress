@@ -36,4 +36,13 @@ The app was primarily developed and refined as a full **Xcode project**, then ca
 
 <img align="left" src="git/screenshots/IMG_3356.PNG" width="133">
 <img align="left" src="git/screenshots/IMG_3359.PNG" width="133">
-<img align="left" src="git/screenshots/IMG_3358.PNG" width="333">
+<img src="git/screenshots/IMG_3358.PNG" width="333">
+
+<br/> <br/> <br/> <br/> <br/>
+
+# 
+
+### Platforms: 
+![iOS](https://img.shields.io/badge/iOS-f0f0f0?logo=apple&logoColor=black&style=for-the-badge)
+![iPadOS](https://img.shields.io/badge/iPadOS-f0f0f0?logo=apple&logoColor=black&style=for-the-badge)
+![macOS](https://img.shields.io/badge/macOS-f0f0f0?logo=apple&logoColor=black&style=for-the-badge)
