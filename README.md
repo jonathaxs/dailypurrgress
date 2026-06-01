@@ -13,7 +13,7 @@
 
 ---
 
-**DailyPurrgress** is a minimalist habit-tracking app designed to make daily progress feel calm, visual, and rewarding through a cat-themed progression system, inspired by my [Gym App](https://github.com/jonathaxs/gymaxis) project.
+**DailyPurrgress** is a minimalist habit-tracking app designed to make daily progress feel calm, visual, and rewarding through a cat-themed progression system, inspired by my [Gym App](https://github.com/jonathaxs/gymanutshell) project.
 
 This mini project was created for the **Swift Student Challenge 2026**, focusing on:
 
