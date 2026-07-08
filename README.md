@@ -1,10 +1,9 @@
-![SwiftUI](https://img.shields.io/badge/SwiftUI-0C7CFF?style=for-the-badge&logo=swift&logoColor=white)
 ![Swift Playgrounds](https://img.shields.io/badge/Swift_Playgrounds-FA7343?style=for-the-badge&logo=swift&logoColor=white)
 
 <img align="left" src="git/appicons/catpurrgresslightrounded.png" width="100">
 <img src="git/appicons/catpurrgressdarkrounded.png" width="100">
 
-# DailyPurrgress
+# DailyPurrgress - SSC 2026
 
 *Daily habits don’t have to be loud.*
 
@@ -13,24 +12,38 @@
 
 ---
 
-**DailyPurrgress** is a minimalist habit-tracking app designed to make daily progress feel calm, visual, and rewarding through a cat-themed progression system, inspired by my [Gym App](https://github.com/jonathaxs/gymnutshell) project.
+Esse miniprojeto foi criado para o **Swift Student Challenge 2026** (SSC 2026), a idéia foi um app single screen de acompanhamento de hábitos, projetado para tornar o progresso diário numa experiência tranquila, visual e simples por meio de um sistema de evolução com temática de gatos. Inspirado no meu projeto [Gym Nutshell](https://apps.apple.com/app/gym-nutshell/id6774739305), que estava em desenvolvimento na época.
 
-This mini project was created for the **Swift Student Challenge 2026**, focusing on:
+Foco nesse desafio foi:
 
-- Clear and intuitive SwiftUI design  
-- Accessibility (VoiceOver support and thoughtful interaction feedback)  
-- Lightweight, focused on user experience  
+- Acessibilidade (suporte ao VoiceOver e feedback de interação bem planejado)
+- Leveza e simplicidade na experiência do usuário
+- Design full em SwiftUI claro e intuitivo
 
-The app was primarily developed and refined as a full **Xcode project**, then carefully migrated to a **Swift Playgrounds (.swiftpm)** format specifically for SSC submission.
+Foi desenvolvido e refinado inicialmente como um projeto completo no **Xcode** e, posteriormente, migrado com cuidado para o formato **Swift Playgrounds (.swiftpm)**, especificamente para a submissão ao SSC.
 
 ---
+
+**_English:_**
+
+This mini project was created for the **Swift Student Challenge 2026** (SSC 2026). The idea was a single screen habit-tracking app designed to make daily progress feel calm, visual, and rewarding through a cat-themed progression system, Inspired by my project [Gym Nutshell](https://apps.apple.com/app/gym-nutshell/id6774739305), which was underway at the time.
+
+The focus of this challenge was:
+
+- Accessibility (VoiceOver support and thoughtful interaction feedback)  
+- Lightweight, focused on user experience
+- Clear and intuitive full SwiftUI design
+
+Was primarily developed and refined as a full **Xcode project**, then carefully migrated to a **Swift Playgrounds (.swiftpm)** format specifically for SSC submission.
+
+#
 
 ### Repository Structure
 
 - `DailyPurrgressApp/` → Original Xcode development version  
 - `DailyPurrgressPlaygrounds/` → Swift Playgrounds submission version
 
----
+#
 
 ### Screenshots
 
