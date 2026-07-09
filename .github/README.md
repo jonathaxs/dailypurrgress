@@ -1,7 +1,7 @@
 ![Swift Playgrounds](https://img.shields.io/badge/Swift_Playgrounds-FA7343?style=for-the-badge&logo=swift&logoColor=white)
 
-<img align="left" src="git/appicons/catpurrgresslightrounded.png" width="100">
-<img src="git/appicons/catpurrgressdarkrounded.png" width="100">
+<img align="left" src="appicons/catpurrgresslightrounded.png" width="100">
+<img src="appicons/catpurrgressdarkrounded.png" width="100">
 
 # DailyPurrgress - SSC 2026
 
@@ -47,9 +47,9 @@ Was primarily developed and refined as a full **Xcode project**, then carefully 
 
 ### Screenshots
 
-<img align="left" src="git/screenshots/IMG_3356.PNG" width="133">
-<img align="left" src="git/screenshots/IMG_3359.PNG" width="133">
-<img src="git/screenshots/IMG_3358.PNG" width="333">
+<img align="left" src="screenshots/IMG_3356.PNG" width="133">
+<img align="left" src="screenshots/IMG_3359.PNG" width="133">
+<img src="screenshots/IMG_3358.PNG" width="333">
 
 <br/> <br/> <br/> <br/> <br/>
 
